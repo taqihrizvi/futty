@@ -1,0 +1,703 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,600;0,700;0,800;1,600;1,700;1,800&amp;family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-container-highest":"#dbe3f3","on-tertiary-container":"#bfcfff","secondary-fixed":"#e5deff","inverse-on-surface":"#ebf1ff","outline":"#747783","on-error":"#ffffff","inverse-primary":"#b2c5ff","primary-fixed":"#dae2ff","secondary-container":"#a192ff","error-container":"#ffdad6","on-background":"#141c28","surface-container-high":"#e1e8f9","on-secondary-fixed-variant":"#46359d","tertiary-fixed":"#dae2ff","outline-variant":"#c4c6d3","tertiary":"#013c93","primary":"#113d8d","on-secondary-fixed":"#190064","surface-bright":"#f8f9ff","tertiary-container":"#2a55ac","on-surface":"#141c28","primary-fixed-dim":"#b2c5ff","on-secondary-container":"#36228d","on-primary-fixed":"#001847","surface-dim":"#d2daeb","on-tertiary":"#ffffff","secondary":"#5e4eb7","surface-variant":"#dbe3f3","on-tertiary-fixed-variant":"#0d4299","primary-container":"#3155a6","secondary-fixed-dim":"#c8bfff","tertiary-fixed-dim":"#b1c5ff","error":"#ba1a1a","on-surface-variant":"#434651","surface-container-low":"#eff3ff","on-error-container":"#93000a","surface-tint":"#375bac","surface":"#f8f9ff","surface-container-lowest":"#ffffff","surface-container":"#e6eeff","on-primary-fixed-variant":"#1a4293","on-primary-container":"#bfcfff","on-tertiary-fixed":"#001946","on-primary":"#ffffff","on-secondary":"#ffffff","inverse-surface":"#29313d","background":"#f8f9ff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xl":"2.25rem","space-xs":"0.25rem","margin-tablet":"1.5rem","gutter":"1rem","space-lg":"1.5rem","space-md":"1rem","margin":"1rem","space-sm":"0.5rem","gutter-desktop":"1.5rem","margin-desktop":"2.5rem"},"fontFamily":{"label-md":["Chivo"],"body-md":["Hanken Grotesk"],"label-sm":["Chivo"],"headline-xl":["Chivo"],"headline-lg":["Chivo"],"body-sm":["Hanken Grotesk"],"score-display":["Chivo"],"display-hero-mobile":["Chivo"],"body-lg":["Hanken Grotesk"],"label-lg":["Chivo"],"headline-md":["Chivo"],"display-hero":["Chivo"]},"fontSize":{"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"body-md":["15px",{"lineHeight":"22px","fontWeight":"400"}],"label-sm":["10px",{"lineHeight":"12px","letterSpacing":"0.06em","fontWeight":"700"}],"headline-xl":["32px",{"lineHeight":"38px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg":["24px",{"lineHeight":"30px","letterSpacing":"-0.015em","fontWeight":"700"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"score-display":["28px",{"lineHeight":"32px","letterSpacing":"0.02em","fontWeight":"800"}],"display-hero-mobile":["34px",{"lineHeight":"38px","letterSpacing":"-0.02em","fontWeight":"800"}],"body-lg":["18px",{"lineHeight":"26px","fontWeight":"400"}],"label-lg":["14px",{"lineHeight":"18px","letterSpacing":"0.02em","fontWeight":"600"}],"headline-md":["20px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"600"}],"display-hero":["48px",{"lineHeight":"52px","letterSpacing":"-0.03em","fontWeight":"800"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col"><div class="h-16 px-space-md flex items-center justify-between bg-surface-container-lowest"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[20px]">sports_soccer</span></div><div class="flex flex-col"><span class="font-headline-md text-headline-md font-bold tracking-tight text-primary leading-none">FUTTY</span><span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant">Tournament Hub</span></div></div></div><div class="px-space-md py-space-sm"><div class="flex items-center justify-between px-space-sm py-space-xs rounded-lg bg-surface-container-low"><div class="flex items-center gap-space-xs min-w-0"><span class="material-symbols-outlined text-primary text-[18px]">trophy</span><span class="font-label-md text-label-md truncate text-on-surface">City Futsal Cup</span></div><span class="material-symbols-outlined text-outline text-[16px]">unfold_more</span></div></div><nav class="flex-1 px-space-sm py-space-sm space-y-1 overflow-y-auto" data-active-classes="bg-primary-container text-on-primary font-bold shadow-sm rounded-lg"><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="home" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span>Home</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="tournaments" href="#"><span class="material-symbols-outlined text-[20px]">emoji_events</span><span>Tournaments</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="matches" href="#"><span class="material-symbols-outlined text-[20px]">sports</span><span>Matches</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="standings-and-brackets" href="#"><span class="material-symbols-outlined text-[20px]">leaderboard</span><span>Standings &amp; Brackets</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="statistics" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span><span>Statistics</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="organizer-tools" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span>Organizer Tools</span></a></nav><div class="p-space-sm bg-surface-container-lowest"><div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-tertiary text-[18px]">verified</span><span class="font-label-sm text-label-sm uppercase text-tertiary font-bold">Official Mode</span></div><span class="font-label-sm text-label-sm text-on-surface-variant">v2.4</span></div></div></aside><div class="pl-64 flex flex-col min-h-screen"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md max-w-md w-full"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full h-10 pl-9 pr-space-md rounded-lg bg-surface-container-low text-on-surface placeholder:text-outline font-body-sm text-body-sm focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="Search fixtures, teams, pitches or players..." type="text"></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs"><button class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error"></span></button><button class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">calendar_today</span></button></div><div class="flex items-center gap-space-sm pl-space-sm"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-md text-label-md text-on-surface font-semibold">Marcus Vance</span><span class="font-label-sm text-label-sm text-on-surface-variant">Tournament Lead</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-background flex-1 px-space-md lg:px-space-lg py-space-md"><div class="flex flex-col w-full">
+<!-- Subtle Court Blueprint Ambient Glow -->
+<div class="relative w-full overflow-hidden">
+<div class="absolute -top-32 -right-32 w-96 h-96 bg-primary-fixed/30 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute top-96 -left-20 w-80 h-80 bg-secondary-fixed/20 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Tournament Director Operations Header Bar -->
+<div class="w-full flex flex-col xl:flex-row xl:items-center justify-between gap-space-md pb-space-lg">
+<div class="flex flex-col space-y-1">
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-sm text-label-sm tracking-widest uppercase font-bold text-primary">Director Command Active</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] text-tertiary">hub</span>
+<span class="font-label-sm text-label-sm uppercase">Lisbon Arena Courts 1 &amp; 2 Online</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline px-1.5 py-0.5 rounded bg-surface-container">SYNC 12ms</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl font-bold tracking-tight text-on-surface">
+          Organizer Operations &amp; Court Administration
+        </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          City Futsal Cup 2025 • Quarter-Finals Session • Real-time Court Synchronization &amp; Table Delegate Console
+        </p>
+</div>
+<!-- Quick Action Controls -->
+<div class="flex flex-wrap items-center gap-space-sm pt-2 xl:pt-0">
+<button class="group flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-all shadow-sm active:scale-95" id="alertHaltBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">emergency_home</span>
+<span class="font-label-md text-label-md">Emergency Court Halt</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-surface-container-lowest text-primary hover:bg-surface-container-high transition-all shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">print</span>
+<span class="font-label-md text-label-md">Print Match Sheets</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-primary-container text-on-primary hover:bg-primary transition-all shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span class="font-label-md text-label-md">Create New Tournament</span>
+</button>
+</div>
+</div>
+<!-- Live Court Operations Control Center (Split Asymmetric Pitch Deck) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md mb-space-lg">
+<!-- COURT 1: LIVE ARENA CONTROLLER -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-xl shadow-md p-space-md lg:p-space-lg flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 left-0 bottom-0 w-1.5 bg-primary"></div>
+<!-- Header Ribbon -->
+<div>
+<div class="flex items-center justify-between gap-space-sm mb-space-sm pl-2">
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded bg-primary text-on-primary font-label-sm text-label-sm uppercase font-bold tracking-wider">COURT 1</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">Main Arena Pitch (Synthetic Wood)</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-low text-primary">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="font-label-sm text-label-sm font-bold tracking-wide uppercase">LIVE • 2nd Half</span>
+</div>
+</div>
+<!-- Main Matchup Scoreboard Box -->
+<div class="bg-surface-container-low rounded-lg p-space-md my-space-xs">
+<div class="grid grid-cols-12 items-center gap-2">
+<!-- Team Home -->
+<div class="col-span-4 flex items-center gap-space-xs">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center font-headline-md text-headline-md font-bold shadow-sm">
+                  F
+                </div>
+<div class="min-w-0">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface truncate">Falcons Futsal</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Home • Group A 1st</p>
+</div>
+</div>
+<!-- Score and Clock Display -->
+<div class="col-span-4 flex flex-col items-center justify-center text-center">
+<div class="flex items-center justify-center gap-2">
+<span class="font-score-display text-score-display font-extrabold text-on-surface bg-surface-container-lowest px-3 py-1 rounded-md shadow-inner">3</span>
+<span class="font-headline-lg text-headline-lg font-bold text-outline">:</span>
+<span class="font-score-display text-score-display font-extrabold text-on-surface bg-surface-container-lowest px-3 py-1 rounded-md shadow-inner">2</span>
+</div>
+<div class="mt-1 flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-error font-bold">14:18 STOP-CLOCK</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Fouls: 4 - 3</span>
+</div>
+</div>
+<!-- Team Away -->
+<div class="col-span-4 flex items-center justify-end gap-space-xs text-right">
+<div class="min-w-0">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface truncate">Warriors FC</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Away • Group B 2nd</p>
+</div>
+<div class="w-10 h-10 rounded-lg bg-secondary text-on-secondary flex items-center justify-center font-headline-md text-headline-md font-bold shadow-sm">
+                  W
+                </div>
+</div>
+</div>
+<!-- Match Foul Accumulation Tracker Bars -->
+<div class="mt-3 pt-3 bg-surface-container rounded-lg p-2.5 flex items-center justify-between text-xs">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Falcons Fouls (4/5)</span>
+<div class="flex gap-1">
+<span class="w-3.5 h-2 rounded-xs bg-error"></span>
+<span class="w-3.5 h-2 rounded-xs bg-error"></span>
+<span class="w-3.5 h-2 rounded-xs bg-error"></span>
+<span class="w-3.5 h-2 rounded-xs bg-error"></span>
+<span class="w-3.5 h-2 rounded-xs bg-surface-container-highest"></span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-error uppercase font-bold tracking-tight">Warning: 1 foul to 10m penalty</span>
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Warriors Fouls (3/5)</span>
+<div class="flex gap-1">
+<span class="w-3.5 h-2 rounded-xs bg-error"></span>
+<span class="w-3.5 h-2 rounded-xs bg-error"></span>
+<span class="w-3.5 h-2 rounded-xs bg-error"></span>
+<span class="w-3.5 h-2 rounded-xs bg-surface-container-highest"></span>
+<span class="w-3.5 h-2 rounded-xs bg-surface-container-highest"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sideline Delegation & Staffing Information -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-2 py-2">
+<div class="bg-surface-container-low p-2 rounded-lg">
+<span class="font-label-sm text-label-sm text-outline uppercase block">Lead Referee</span>
+<span class="font-label-md text-label-md font-bold text-on-surface truncate block">M. Chen (FIFA Lic.)</span>
+</div>
+<div class="bg-surface-container-low p-2 rounded-lg">
+<span class="font-label-sm text-label-sm text-outline uppercase block">2nd Referee</span>
+<span class="font-label-md text-label-md font-bold text-on-surface truncate block">D. Carvalho</span>
+</div>
+<div class="bg-surface-container-low p-2 rounded-lg">
+<span class="font-label-sm text-label-sm text-outline uppercase block">Timekeeper</span>
+<span class="font-label-md text-label-md font-bold text-on-surface truncate block">A. Ramos</span>
+</div>
+<div class="bg-surface-container-low p-2 rounded-lg">
+<span class="font-label-sm text-label-sm text-outline uppercase block">Pitch Delegate</span>
+<span class="font-label-md text-label-md font-bold text-tertiary truncate block">S. Al-Mansoor</span>
+</div>
+</div>
+</div>
+<!-- Real-Time Hardware & Software Trigger Toolbar -->
+<div class="pt-3 flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md" id="clockSyncBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">sync</span>
+<span>Sync LED Board</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md" id="overrideScoreBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-outline">tune</span>
+<span>Score Override</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md" type="button">
+<span class="material-symbols-outlined text-[16px] text-outline">timer</span>
+<span>Timeout Req. (Warriors FC)</span>
+</button>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">check_circle</span> HDMI Console Feeder 4K 60fps
+          </span>
+</div>
+</div>
+<!-- COURT 2: UPCOMING MATCH PREPARATION -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-xl shadow-md p-space-md lg:p-space-lg flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 left-0 bottom-0 w-1.5 bg-secondary"></div>
+<div>
+<!-- Header Ribbon -->
+<div class="flex items-center justify-between gap-space-sm mb-space-sm pl-2">
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded bg-secondary text-on-secondary font-label-sm text-label-sm uppercase font-bold tracking-wider">COURT 2</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">East Wing Court</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[14px]">hourglass_top</span>
+<span class="font-label-sm text-label-sm font-bold tracking-wide uppercase">Pre-Match Prep</span>
+</div>
+</div>
+<!-- Upcoming Fixture Details -->
+<div class="bg-surface-container-low rounded-lg p-space-md my-space-xs">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-bold">Quarter-Final 2 • KO 16:30 GMT</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Pitch Free</span>
+</div>
+<div class="flex items-center justify-between py-2">
+<div class="flex items-center gap-2">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center font-headline-md text-headline-md font-bold text-on-surface">T</div>
+<div>
+<h4 class="font-headline-md text-headline-md font-bold text-on-surface">Titans United</h4>
+<p class="font-label-sm text-label-sm text-tertiary">Roster Confirmed (12/12)</p>
+</div>
+</div>
+<span class="font-label-lg text-label-lg font-bold text-outline px-2">VS</span>
+<div class="flex items-center gap-2 text-right">
+<div>
+<h4 class="font-headline-md text-headline-md font-bold text-on-surface">Porto Stars</h4>
+<p class="font-label-sm text-label-sm text-tertiary">Roster Confirmed (12/12)</p>
+</div>
+<div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center font-headline-md text-headline-md font-bold text-on-surface">P</div>
+</div>
+</div>
+<!-- Warm-up Countdown & Official Kit Verification -->
+<div class="mt-3 pt-3 bg-surface-container-lowest rounded-lg p-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">fitness_center</span>
+<div>
+<span class="font-label-sm text-label-sm text-outline uppercase block">Warm-up Pitch Period</span>
+<span class="font-headline-md text-headline-md font-bold text-secondary">34:20 REMAINING</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Kits Cleared</span>
+<span class="font-label-md text-label-md font-bold text-on-surface">Navy vs Crimson</span>
+</div>
+</div>
+</div>
+<!-- Staffing for Court 2 -->
+<div class="grid grid-cols-2 gap-2 py-2">
+<div class="bg-surface-container-low p-2 rounded-lg">
+<span class="font-label-sm text-label-sm text-outline uppercase block">Assigned Official 1</span>
+<span class="font-label-md text-label-md font-bold text-on-surface">J. Nogueira</span>
+</div>
+<div class="bg-surface-container-low p-2 rounded-lg">
+<span class="font-label-sm text-label-sm text-outline uppercase block">Table Marshal</span>
+<span class="font-label-md text-label-md font-bold text-on-surface">E. Svensson</span>
+</div>
+</div>
+</div>
+<div class="pt-3 flex items-center justify-between">
+<button class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified_user</span>
+<span>Check Kit Conflict</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-secondary text-on-secondary hover:bg-primary transition-all font-label-md text-label-md shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+<span>Call Teams to Tunnel</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Live Delay Adjustment Banner & Tactical Alert Component -->
+<div class="mb-space-lg bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-start md:items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[24px]">schedule_send</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md font-bold text-on-surface">Schedule Synchronization &amp; Delay Manager</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Push cumulative schedule adjustments across all active pitch displays, referee tablets, and livestream tickers simultaneously.</p>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase text-outline font-bold">1-Click Delay Shift:</span>
+<button class="delay-pill px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high font-label-md text-label-md text-on-surface transition-all active:scale-95" data-mins="5" type="button">+5 Min</button>
+<button class="delay-pill px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high font-label-md text-label-md text-on-surface transition-all active:scale-95" data-mins="10" type="button">+10 Min</button>
+<button class="delay-pill px-3 py-1.5 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md shadow-sm active:scale-95" data-mins="15" type="button">+15 Min (OT Buffer)</button>
+<button class="delay-pill px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high font-label-md text-label-md text-on-surface transition-all active:scale-95" data-mins="30" type="button">+30 Min</button>
+</div>
+</div>
+<!-- Sideline Administration & Operations Command Grid (6 Functional Modules) -->
+<div class="mb-space-lg">
+<div class="flex items-center justify-between mb-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">admin_panel_settings</span>
+<h2 class="font-headline-lg text-headline-lg font-bold text-on-surface">Sideline Administration Modules</h2>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">6 Operational Modules Connected</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md">
+<!-- Module 1: Roster & Team Check-In -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md lg:p-space-lg shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">badge</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-tertiary font-label-sm text-label-sm font-bold uppercase">8/8 Verified</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-1">Roster &amp; Team Check-In</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+              Validate government photo IDs, squad bib assignments, and captain armbands prior to court clearance.
+            </p>
+<div class="space-y-2 bg-surface-container-low p-space-sm rounded-lg mb-space-md">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Total Players Accreditated</span>
+<span class="font-bold text-on-surface">96 Athletes</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Jersey Clashes Resolved</span>
+<span class="font-bold text-tertiary">0 Pending (All Clean)</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Medical Waivers</span>
+<span class="font-bold text-on-surface">100% Signed</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center justify-center gap-1.5" type="button">
+<span>Manage Squad Accreditations</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- Module 2: Electronic Scoreboard & Video Wall Feed -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md lg:p-space-lg shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">tv</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-bold uppercase">Dual HDMI Feed</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-1">Scoreboard &amp; Video Feed</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+              Control the jumbotron stadium graphics, sponsor overlays, and court LED timekeepers.
+            </p>
+<div class="space-y-2 bg-surface-container-low p-space-sm rounded-lg mb-space-md">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Arena Display Theme</span>
+<span class="font-bold text-on-surface">Corporate Athletic Navy</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Broadcast Delay Buffer</span>
+<span class="font-bold text-on-surface">3.2 Seconds</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Sponsor Rotation</span>
+<span class="font-bold text-primary">Active (4 Partners)</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center justify-center gap-1.5" type="button">
+<span>Open Graphics Console</span>
+<span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</div>
+<!-- Module 3: Disciplinary & Match Incident Review -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md lg:p-space-lg shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[22px]">gavel</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold uppercase">1 Red Suspended</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-1">Disciplinary Review</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+              Process red card bans, cumulative yellow records, and formal technical delegate objections.
+            </p>
+<div class="space-y-2 bg-surface-container-low p-space-sm rounded-lg mb-space-md">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Active Suspensions</span>
+<span class="font-bold text-error">#4 M. Rossi (Viper FC)</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Yellow Cards Logged</span>
+<span class="font-bold text-on-surface">14 (Tournament-wide)</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Appeals Lodged</span>
+<span class="font-bold text-outline">0 Unresolved</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center justify-center gap-1.5" type="button">
+<span>Review Incident Log</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- Module 4: Referee & Staff Assignments -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md lg:p-space-lg shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">sports</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-secondary font-label-sm text-label-sm font-bold uppercase">12 Assigned</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-1">Referee &amp; Staff Crew</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+              Assign main referees, second officials, third table arbiters, and arena floor paramedics.
+            </p>
+<div class="space-y-2 bg-surface-container-low p-space-sm rounded-lg mb-space-md">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Lead Officials Checked In</span>
+<span class="font-bold text-tertiary">6/6 On Venue</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Pitch Table Timekeepers</span>
+<span class="font-bold text-on-surface">4 Stations Staffed</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Next Rotation Shift</span>
+<span class="font-bold text-on-surface">17:15 GMT</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center justify-center gap-1.5" type="button">
+<span>Manage Ref Roster</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- Module 5: Tournament Rulebook & 5v5 Settings -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md lg:p-space-lg shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">menu_book</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-bold uppercase">FIFA Laws App</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-1">Rules &amp; 5v5 Specifications</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+              Match configuration parameters applied universally across stadium clocks and scoring consoles.
+            </p>
+<div class="space-y-2 bg-surface-container-low p-space-sm rounded-lg mb-space-md">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Stop-Clock Half Duration</span>
+<span class="font-bold text-on-surface">20:00 Effective Mins</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Foul Penalty Threshold</span>
+<span class="font-bold text-on-surface">5 Fouls (Direct 10m)</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Team Timeouts</span>
+<span class="font-bold text-on-surface">1 Per Half / Per Team</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center justify-center gap-1.5" type="button">
+<span>Configure Parameters</span>
+<span class="material-symbols-outlined text-[16px]">tune</span>
+</button>
+</div>
+<!-- Module 6: Court Facilities & Venue Logistics -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md lg:p-space-lg shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">stadium</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-tertiary font-label-sm text-label-sm font-bold uppercase">Lisbon Arena</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface mb-1">Court Surface &amp; Balls</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+              Manage ball pressure regulations (Size 4 Low-Bounce), locker allocation, and medical carts.
+            </p>
+<div class="space-y-2 bg-surface-container-low p-space-sm rounded-lg mb-space-md">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Match Ball Pressure</span>
+<span class="font-bold text-on-surface">0.6 - 0.9 Bar (Checked)</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Locker Rooms 1-4</span>
+<span class="font-bold text-tertiary">Occupied • Cleaned</span>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface">Pitch Defibrillators</span>
+<span class="font-bold text-tertiary">2 Station Units Ready</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-surface-container text-primary hover:bg-surface-container-high font-label-md text-label-md transition-colors flex items-center justify-center gap-1.5" type="button">
+<span>Venue Inspection Log</span>
+<span class="material-symbols-outlined text-[16px]">checklist</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Live Court Operations Audit Stream & Incident Feed -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<!-- Left: Real-Time Audit Log Table -->
+<div class="lg:col-span-8 bg-surface-container-lowest rounded-xl p-space-md lg:p-space-lg shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[22px]">history</span>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">Sideline Action &amp; Audit Log</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-sm text-label-sm uppercase text-outline font-bold">Auto-Saving to Immutable Ledger</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-2.5 px-3 rounded-l">Time</th>
+<th class="py-2.5 px-3">Pitch / Sector</th>
+<th class="py-2.5 px-3">Actor</th>
+<th class="py-2.5 px-3">Official Action Logged</th>
+<th class="py-2.5 px-3 text-right rounded-r">Status</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm" id="auditTableBody">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-label-md text-label-md font-bold text-on-surface">16:14:02</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-primary text-on-primary font-label-sm text-label-sm font-bold">Court 1</span>
+</td>
+<td class="py-3 px-3 text-on-surface font-medium">Ref M. Chen</td>
+<td class="py-3 px-3 text-on-surface">
+                  Goal recorded #9 R. Silva (Falcons Futsal) 3-2. Video verified.
+                </td>
+<td class="py-3 px-3 text-right">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-tertiary font-label-sm text-label-sm font-bold">COMMITTED</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-label-md text-label-md font-bold text-on-surface">16:11:45</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-primary text-on-primary font-label-sm text-label-sm font-bold">Court 1</span>
+</td>
+<td class="py-3 px-3 text-on-surface font-medium">Table Official A. Ramos</td>
+<td class="py-3 px-3 text-on-surface">
+                  Clock adjusted manually (+12 sec) per lead referee whistle stoppage.
+                </td>
+<td class="py-3 px-3 text-right">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-tertiary font-label-sm text-label-sm font-bold">SYNCED</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-label-md text-label-md font-bold text-on-surface">16:04:18</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-primary text-on-primary font-label-sm text-label-sm font-bold">Court 1</span>
+</td>
+<td class="py-3 px-3 text-on-surface font-medium">Delegate S. Al-Mansoor</td>
+<td class="py-3 px-3 text-on-surface">
+                  4th Foul registered to Falcons Futsal. Official acoustic buzzer triggered.
+                </td>
+<td class="py-3 px-3 text-right">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-tertiary font-label-sm text-label-sm font-bold">BROADCAST</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-label-md text-label-md font-bold text-on-surface">15:58:30</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-bold">Court 2</span>
+</td>
+<td class="py-3 px-3 text-on-surface font-medium">Marshal E. Svensson</td>
+<td class="py-3 px-3 text-on-surface">
+                  Official match roster signed for Titans United vs Porto Stars (QF2).
+                </td>
+<td class="py-3 px-3 text-right">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-tertiary font-label-sm text-label-sm font-bold">VERIFIED</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-label-md text-label-md font-bold text-on-surface">15:42:10</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm font-bold">HQ Table</span>
+</td>
+<td class="py-3 px-3 text-on-surface font-medium">Director M. Vance</td>
+<td class="py-3 px-3 text-on-surface">
+                  Semi-Final court seeding locked. Bracket automated transition enabled.
+                </td>
+<td class="py-3 px-3 text-right">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-tertiary font-label-sm text-label-sm font-bold">LOCKED</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right: Court Telemetry & Arena Sensor Stat Module -->
+<div class="lg:col-span-4 bg-surface-container-lowest rounded-xl p-space-md lg:p-space-lg shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">Court Telemetry</h3>
+<span class="material-symbols-outlined text-primary text-[20px]">sensors</span>
+</div>
+<div class="space-y-space-sm mb-space-md">
+<div class="p-3 bg-surface-container-low rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">thermostat</span>
+<div>
+<span class="font-label-sm text-label-sm text-outline block">Indoor Arena Temp</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">20.4°C</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container text-tertiary font-label-sm text-label-sm font-bold">OPTIMAL</span>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">speed</span>
+<div>
+<span class="font-label-sm text-label-sm text-outline block">Ball Velocity Peak (QF1)</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">104 km/h</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">Falcons #9</span>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">router</span>
+<div>
+<span class="font-label-sm text-label-sm text-outline block">Mesh Network Uptime</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">99.98%</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container text-tertiary font-label-sm text-label-sm font-bold">12 APs ONLINE</span>
+</div>
+</div>
+</div>
+<!-- Official Quick-Download Section -->
+<div class="bg-surface-container p-3 rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]">description</span>
+<div>
+<span class="font-label-md text-label-md font-bold text-on-surface block">Official QF Match Packet</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">PDF Export • Signed by FIFA Referees</span>
+</div>
+</div>
+<button class="w-9 h-9 rounded-lg bg-surface-container-lowest text-primary hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Notification Banner Modal / Toast (Simulated interactive feedback) -->
+<div class="fixed bottom-6 right-6 z-50 bg-inverse-surface text-inverse-on-surface px-space-md py-3 rounded-lg shadow-xl flex items-center gap-3 transition-all duration-300 transform translate-y-24 opacity-0 pointer-events-none" id="directorToast">
+<span class="material-symbols-outlined text-tertiary-fixed text-[20px]" id="toastIcon">check_circle</span>
+<span class="font-body-sm text-body-sm font-medium" id="toastMessage">Operation applied successfully.</span>
+</div>
+</div>
+<script>
+  // Interactive Director Console Script
+  (function() {
+    const toast = document.getElementById('directorToast');
+    const toastMsg = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+    let toastTimeout;
+
+    function showNotification(msg, isAlert = false) {
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastMsg.textContent = msg;
+      if (isAlert) {
+        toastIcon.textContent = 'warning';
+        toastIcon.className = 'material-symbols-outlined text-error text-[20px]';
+      } else {
+        toastIcon.textContent = 'check_circle';
+        toastIcon.className = 'material-symbols-outlined text-tertiary-fixed text-[20px]';
+      }
+      toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    // Schedule Delay adjustments
+    const delayButtons = document.querySelectorAll('.delay-pill');
+    delayButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const mins = this.getAttribute('data-mins');
+        showNotification(`All subsequent arena fixtures pushed by +${mins} minutes. Boards updated.`);
+        
+        // Log to table
+        const tbody = document.getElementById('auditTableBody');
+        const now = new Date();
+        const timeStr = now.toTimeString().split(' ')[0];
+        const newRow = document.createElement('tr');
+        newRow.className = 'hover:bg-surface-container-low transition-colors bg-primary-fixed/20';
+        newRow.innerHTML = `
+          <td class="py-3 px-3 font-label-md text-label-md font-bold text-on-surface">${timeStr}</td>
+          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm font-bold">ALL PITCHES</span></td>
+          <td class="py-3 px-3 text-on-surface font-medium">Dir. Marcus Vance</td>
+          <td class="py-3 px-3 text-on-surface">Global schedule offset of +${mins} mins applied.</td>
+          <td class="py-3 px-3 text-right"><span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-bold">BROADCAST</span></td>
+        `;
+        tbody.insertBefore(newRow, tbody.firstChild);
+      });
+    });
+
+    // Emergency court halt
+    const alertBtn = document.getElementById('alertHaltBtn');
+    if (alertBtn) {
+      alertBtn.addEventListener('click', function() {
+        showNotification('ALERT: Emergency pitch halt signal transmitted to court table sirens.', true);
+      });
+    }
+
+    // LED Sync Trigger
+    const clockSync = document.getElementById('clockSyncBtn');
+    if (clockSync) {
+      clockSync.addEventListener('click', function() {
+        showNotification('Court 1 LED Stadium Board re-synchronized with master 20-min clock.');
+      });
+    }
+
+    // Score override modal trigger
+    const overrideScoreBtn = document.getElementById('overrideScoreBtn');
+    if (overrideScoreBtn) {
+      overrideScoreBtn.addEventListener('click', function() {
+        showNotification('Manual Score Overrule dialog unlocked for Court 1 table marshal.');
+      });
+    }
+  })();
+</script></main></div></body></html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,600;0,700;0,800;1,600;1,700;1,800&amp;family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-container-highest":"#dbe3f3","on-tertiary-container":"#bfcfff","secondary-fixed":"#e5deff","inverse-on-surface":"#ebf1ff","outline":"#747783","on-error":"#ffffff","inverse-primary":"#b2c5ff","primary-fixed":"#dae2ff","secondary-container":"#a192ff","error-container":"#ffdad6","on-background":"#141c28","surface-container-high":"#e1e8f9","on-secondary-fixed-variant":"#46359d","tertiary-fixed":"#dae2ff","outline-variant":"#c4c6d3","tertiary":"#013c93","primary":"#113d8d","on-secondary-fixed":"#190064","surface-bright":"#f8f9ff","tertiary-container":"#2a55ac","on-surface":"#141c28","primary-fixed-dim":"#b2c5ff","on-secondary-container":"#36228d","on-primary-fixed":"#001847","surface-dim":"#d2daeb","on-tertiary":"#ffffff","secondary":"#5e4eb7","surface-variant":"#dbe3f3","on-tertiary-fixed-variant":"#0d4299","primary-container":"#3155a6","secondary-fixed-dim":"#c8bfff","tertiary-fixed-dim":"#b1c5ff","error":"#ba1a1a","on-surface-variant":"#434651","surface-container-low":"#eff3ff","on-error-container":"#93000a","surface-tint":"#375bac","surface":"#f8f9ff","surface-container-lowest":"#ffffff","surface-container":"#e6eeff","on-primary-fixed-variant":"#1a4293","on-primary-container":"#bfcfff","on-tertiary-fixed":"#001946","on-primary":"#ffffff","on-secondary":"#ffffff","inverse-surface":"#29313d","background":"#f8f9ff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xl":"2.25rem","space-xs":"0.25rem","margin-tablet":"1.5rem","gutter":"1rem","space-lg":"1.5rem","space-md":"1rem","margin":"1rem","space-sm":"0.5rem","gutter-desktop":"1.5rem","margin-desktop":"2.5rem"},"fontFamily":{"label-md":["Chivo"],"body-md":["Hanken Grotesk"],"label-sm":["Chivo"],"headline-xl":["Chivo"],"headline-lg":["Chivo"],"body-sm":["Hanken Grotesk"],"score-display":["Chivo"],"display-hero-mobile":["Chivo"],"body-lg":["Hanken Grotesk"],"label-lg":["Chivo"],"headline-md":["Chivo"],"display-hero":["Chivo"]},"fontSize":{"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"body-md":["15px",{"lineHeight":"22px","fontWeight":"400"}],"label-sm":["10px",{"lineHeight":"12px","letterSpacing":"0.06em","fontWeight":"700"}],"headline-xl":["32px",{"lineHeight":"38px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-lg":["24px",{"lineHeight":"30px","letterSpacing":"-0.015em","fontWeight":"700"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"score-display":["28px",{"lineHeight":"32px","letterSpacing":"0.02em","fontWeight":"800"}],"display-hero-mobile":["34px",{"lineHeight":"38px","letterSpacing":"-0.02em","fontWeight":"800"}],"body-lg":["18px",{"lineHeight":"26px","fontWeight":"400"}],"label-lg":["14px",{"lineHeight":"18px","letterSpacing":"0.02em","fontWeight":"600"}],"headline-md":["20px",{"lineHeight":"26px","letterSpacing":"-0.01em","fontWeight":"600"}],"display-hero":["48px",{"lineHeight":"52px","letterSpacing":"-0.03em","fontWeight":"800"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col"><div class="h-16 px-space-md flex items-center justify-between bg-surface-container-lowest"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[20px]">sports_soccer</span></div><div class="flex flex-col"><span class="font-headline-md text-headline-md font-bold tracking-tight text-primary leading-none">FUTTY</span><span class="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant">Tournament Hub</span></div></div></div><div class="px-space-md py-space-sm"><div class="flex items-center justify-between px-space-sm py-space-xs rounded-lg bg-surface-container-low"><div class="flex items-center gap-space-xs min-w-0"><span class="material-symbols-outlined text-primary text-[18px]">trophy</span><span class="font-label-md text-label-md truncate text-on-surface">City Futsal Cup</span></div><span class="material-symbols-outlined text-outline text-[16px]">unfold_more</span></div></div><nav class="flex-1 px-space-sm py-space-sm space-y-1 overflow-y-auto" data-active-classes="bg-primary-container text-on-primary font-bold shadow-sm rounded-lg"><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="home" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span>Home</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="tournaments" href="#"><span class="material-symbols-outlined text-[20px]">emoji_events</span><span>Tournaments</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2.5 transition-colors bg-primary-container text-on-primary font-bold shadow-sm rounded-lg" data-path="matches" href="#"><span class="material-symbols-outlined text-[20px]">sports</span><span>Matches</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="standings-and-brackets" href="#"><span class="material-symbols-outlined text-[20px]">leaderboard</span><span>Standings &amp; Brackets</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="statistics" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span><span>Statistics</span></a><a class="flex items-center gap-space-sm px-space-sm py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-lg text-label-lg" data-path="organizer-tools" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span>Organizer Tools</span></a></nav><div class="p-space-sm bg-surface-container-lowest"><div class="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-tertiary text-[18px]">verified</span><span class="font-label-sm text-label-sm uppercase text-tertiary font-bold">Official Mode</span></div><span class="font-label-sm text-label-sm text-on-surface-variant">v2.4</span></div></div></aside><div class="pl-64 flex flex-col min-h-screen"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md max-w-md w-full"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span><input class="w-full h-10 pl-9 pr-space-md rounded-lg bg-surface-container-low text-on-surface placeholder:text-outline font-body-sm text-body-sm focus:outline-none focus:bg-surface-container-lowest transition-colors" placeholder="Search fixtures, teams, pitches or players..." type="text"></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs"><button class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error"></span></button><button class="w-10 h-10 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">calendar_today</span></button></div><div class="flex items-center gap-space-sm pl-space-sm"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-md text-label-md text-on-surface font-semibold">Marcus Vance</span><span class="font-label-sm text-label-sm text-on-surface-variant">Tournament Lead</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-background flex-1 px-space-md lg:px-space-lg py-space-md"><div class="flex flex-col w-full pb-10">
+<!-- TOP CONSOLE TICKER & STATUS RIBBON -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-lowest px-space-md py-space-sm rounded-xl shadow-sm mb-space-md">
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm uppercase tracking-wider">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>Match Console</span>
+</div>
+<span class="text-outline-variant font-label-sm">|</span>
+<div class="flex items-center gap-1 text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px] text-tertiary">stadium</span>
+<span>Court 1 Main Arena</span>
+</div>
+<span class="text-outline-variant font-label-sm hidden sm:inline">•</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm hidden sm:inline">Quarter-Final 1 • 5v5 AMF/FIFA Futsal Rules</span>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">sports</span>
+<span>Lead Ref: <strong>M. Chen</strong> (FIFA Futsal)</span>
+</div>
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container-high text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span>SYNC ACTIVE</span>
+</div>
+</div>
+</div>
+<!-- SECTION 1: MASTER MATCH SCOREBOARD CARD -->
+<div class="relative overflow-hidden rounded-xl bg-inverse-surface text-inverse-on-surface shadow-md mb-space-lg">
+<!-- Pitch Accent Leading Line -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary-container"></div>
+<div class="p-space-md lg:p-space-lg">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-center">
+<!-- HOME TEAM (Falcons Futsal) -->
+<div class="lg:col-span-4 flex items-center justify-between lg:justify-start gap-space-md bg-surface-container-lowest/5 p-space-md rounded-xl backdrop-blur-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-14 h-14 rounded-xl bg-primary flex items-center justify-center shadow-md">
+<span class="font-headline-lg text-headline-lg font-bold text-on-primary">FF</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-headline-lg text-headline-lg font-bold text-inverse-on-surface tracking-tight">Falcons Futsal</span>
+<span class="px-1.5 py-0.5 rounded bg-primary-container text-on-primary font-label-sm text-label-sm uppercase">HOME</span>
+</div>
+<div class="flex items-center gap-space-sm text-surface-variant font-body-sm text-body-sm mt-0.5">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-tertiary-fixed">flag</span>
+                  Fouls: <strong class="text-inverse-on-surface">3/5</strong>
+</span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-surface-tint">timer</span>
+                  TOs: <strong class="text-inverse-on-surface">1 Left</strong>
+</span>
+</div>
+</div>
+</div>
+<div class="lg:ml-auto">
+<div class="w-16 h-16 rounded-xl bg-primary-container text-on-primary flex items-center justify-center font-display-hero text-display-hero tracking-normal shadow-inner" id="home-score-display">
+              3
+            </div>
+</div>
+</div>
+<!-- CENTER CLOCK & MATCH STATUS OPERATIONAL CONTROLS -->
+<div class="lg:col-span-4 flex flex-col items-center justify-center text-center px-space-sm">
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2.5 h-2.5 rounded-full bg-surface-tint animate-ping"></span>
+<span class="font-label-md text-label-md tracking-widest uppercase text-surface-bright font-bold">1st Half • In Play</span>
+</div>
+<div class="font-display-hero text-display-hero text-inverse-on-surface tracking-wider font-extrabold my-0.5" id="match-clock-time">
+            14:32
+          </div>
+<!-- Rapid Clock Adjusters -->
+<div class="flex items-center gap-1.5 mt-2">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-highest/20 hover:bg-surface-container-highest/30 text-inverse-on-surface font-label-md text-label-md flex items-center gap-1 transition-all" id="clock-toggle-btn">
+<span class="material-symbols-outlined text-[18px]" id="clock-play-icon">pause</span>
+<span id="clock-status-label">Pause</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-highest/20 hover:bg-surface-container-highest/30 text-inverse-on-surface font-label-md text-label-md transition-all" onclick="adjustClock(30)">
+              +30s
+            </button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-highest/20 hover:bg-surface-container-highest/30 text-inverse-on-surface font-label-md text-label-md transition-all" onclick="adjustClock(-30)">
+              -30s
+            </button>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-highest/20 hover:bg-surface-container-highest/30 text-inverse-on-surface font-label-md text-label-md flex items-center gap-1 transition-all" title="Official Timeout">
+<span class="material-symbols-outlined text-[16px]">alarm</span>
+<span>TO</span>
+</button>
+<button class="px-2.5 py-1.5 rounded-lg bg-error-container text-on-error-container font-label-md text-label-md hover:opacity-90 transition-all">
+              End Half
+            </button>
+</div>
+</div>
+<!-- AWAY TEAM (Warriors FC) -->
+<div class="lg:col-span-4 flex items-center justify-between lg:justify-end gap-space-md bg-surface-container-lowest/5 p-space-md rounded-xl backdrop-blur-sm">
+<div class="lg:order-2 flex items-center gap-space-sm text-right lg:text-left">
+<div class="order-2 lg:order-1">
+<div class="flex items-center justify-end lg:justify-start gap-1.5">
+<span class="px-1.5 py-0.5 rounded bg-surface-variant text-on-surface-variant font-label-sm text-label-sm uppercase">AWAY</span>
+<span class="font-headline-lg text-headline-lg font-bold text-inverse-on-surface tracking-tight">Warriors FC</span>
+</div>
+<div class="flex items-center justify-end lg:justify-start gap-space-sm text-surface-variant font-body-sm text-body-sm mt-0.5">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-error">warning</span>
+                  Fouls: <strong class="text-error-container">4/5</strong>
+</span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-outline-variant">timer_off</span>
+                  TOs: <strong class="text-outline-variant">0</strong>
+</span>
+</div>
+</div>
+<div class="order-1 lg:order-2 w-14 h-14 rounded-xl bg-inverse-surface flex items-center justify-center shadow-md">
+<span class="font-headline-lg text-headline-lg font-bold text-primary-fixed">WFC</span>
+</div>
+</div>
+<div class="lg:order-1">
+<div class="w-16 h-16 rounded-xl bg-surface-container-lowest/20 text-inverse-on-surface flex items-center justify-center font-display-hero text-display-hero tracking-normal" id="away-score-display">
+              2
+            </div>
+</div>
+</div>
+</div>
+<!-- Live Penalty Fouls Alert Strip -->
+<div class="mt-space-md pt-space-sm flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-lowest/10 px-space-md py-2 rounded-lg">
+<div class="flex items-center gap-2 text-error-container font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">gavel</span>
+<span>DISCIPLINE WARNING: Warriors FC accumulated 4 fouls. 5th foul awards direct 10m Penalty Kick without defensive wall.</span>
+</div>
+<div class="text-inverse-on-surface/80 font-body-sm text-body-sm">
+<span>Target Court Temp: <strong>21.4°C</strong></span>
+<span class="mx-2">•</span>
+<span>Ball Pressure: <strong>0.62 BAR</strong> (FIFA Quality Pro)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 2: RAPID SIDELINE ACTION TOUCHPAD (56px high touch targets) -->
+<div class="mb-space-lg">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5 text-on-surface font-label-md text-label-md uppercase tracking-wide">
+<span class="material-symbols-outlined text-primary text-[20px]">touch_app</span>
+<span>Rapid Pitch-Side Incident Trigger (Press or Hotkey 1-6)</span>
+</div>
+<span class="text-on-surface-variant font-body-sm text-body-sm">Auto-syncs live scoreboard and match log</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-space-sm">
+<!-- GOAL -->
+<button class="h-14 rounded-xl bg-primary hover:bg-tertiary text-on-primary flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all font-label-lg text-label-lg" onclick="triggerQuickAction('GOAL')">
+<span class="material-symbols-outlined text-[24px]">sports_soccer</span>
+<span>+ GOAL</span>
+</button>
+<!-- ASSIST -->
+<button class="h-14 rounded-xl bg-tertiary-container hover:bg-primary text-on-primary flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all font-label-lg text-label-lg" onclick="triggerQuickAction('ASSIST')">
+<span class="material-symbols-outlined text-[24px]">trending_up</span>
+<span>+ ASSIST</span>
+</button>
+<!-- GK SAVE -->
+<button class="h-14 rounded-xl bg-surface-container-highest hover:bg-surface-container-high text-primary flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all font-label-lg text-label-lg" onclick="triggerQuickAction('SAVE')">
+<span class="material-symbols-outlined text-[24px]">shield</span>
+<span>+ GK SAVE</span>
+</button>
+<!-- FOUL / CARD -->
+<button class="h-14 rounded-xl bg-error-container hover:opacity-90 text-on-error-container flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all font-label-lg text-label-lg" onclick="triggerQuickAction('FOUL')">
+<span class="material-symbols-outlined text-[24px]">style</span>
+<span>FOUL / CARD</span>
+</button>
+<!-- SUB (5v5) -->
+<button class="h-14 rounded-xl bg-surface-container-lowest hover:bg-surface-container text-on-surface flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all font-label-lg text-label-lg" onclick="triggerQuickAction('SUB')">
+<span class="material-symbols-outlined text-[24px] text-secondary">published_with_changes</span>
+<span>SUB (5v5)</span>
+</button>
+<!-- UNDO -->
+<button class="h-14 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center gap-2 active:scale-95 transition-all font-label-lg text-label-lg" onclick="undoLastAction()">
+<span class="material-symbols-outlined text-[22px]">undo</span>
+<span>UNDO (14')</span>
+</button>
+</div>
+</div>
+<!-- SECTION 3: TWO-COLUMN COURT-SIDE WORKSPACE -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- LEFT COLUMN: RAPID INCIDENT LOGGER (7 Cols) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- INCIDENT ENTRY CONSOLE -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md lg:p-space-lg shadow-sm">
+<div class="flex items-center justify-between pb-space-sm mb-space-md bg-surface-container-low px-space-md py-2.5 rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">assignment_add</span>
+<span class="font-headline-md text-headline-md text-on-surface">Incident Logger</span>
+</div>
+<span class="text-on-surface-variant font-label-sm text-label-sm uppercase bg-surface-container-highest px-2 py-0.5 rounded">Console Active</span>
+</div>
+<!-- STEP 1: SELECT SQUAD -->
+<div class="mb-space-md">
+<div class="flex items-center justify-between mb-2">
+<label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Step 1: Select Active Squad</label>
+<span class="text-primary font-body-sm text-body-sm font-semibold" id="selected-team-label">Falcons Futsal</span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<button class="p-3 rounded-lg bg-primary-container text-on-primary flex items-center justify-between font-label-lg text-label-lg transition-all shadow-sm" id="team-opt-falcons" onclick="selectTeam('falcons')" type="button">
+<div class="flex items-center gap-2">
+<span class="w-7 h-7 rounded-md bg-surface-container-lowest/20 flex items-center justify-center text-on-primary font-bold text-[12px]">FF</span>
+<span>Falcons Futsal</span>
+</div>
+<span class="material-symbols-outlined text-[20px]" id="team-opt-falcons-check">check_circle</span>
+</button>
+<button class="p-3 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container flex items-center justify-between font-label-lg text-label-lg transition-all" id="team-opt-warriors" onclick="selectTeam('warriors')" type="button">
+<div class="flex items-center gap-2">
+<span class="w-7 h-7 rounded-md bg-surface-container text-on-surface-variant flex items-center justify-center font-bold text-[12px]">WFC</span>
+<span>Warriors FC</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-outline opacity-0" id="team-opt-warriors-check">check_circle</span>
+</button>
+</div>
+</div>
+<!-- STEP 2: INVOLVED ON-COURT PLAYER -->
+<div class="mb-space-md">
+<div class="flex items-center justify-between mb-2">
+<label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Step 2: Involved Player on Court</label>
+<button class="font-label-sm text-label-sm text-primary hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">swap_horiz</span> Bench Subs (7)
+            </button>
+</div>
+<!-- Dynamic 5-player active grid -->
+<div class="grid grid-cols-2 sm:grid-cols-5 gap-space-xs" id="player-selection-grid">
+<button class="player-pill p-2.5 rounded-lg bg-primary text-on-primary flex flex-col items-center justify-center text-center transition-all shadow-sm" onclick="selectPlayer(10, 'M. Silva', 'PIVO')" type="button">
+<span class="font-score-display text-score-display leading-none">#10</span>
+<span class="font-label-md text-label-md mt-1 truncate max-w-full">M. Silva</span>
+<span class="font-label-sm text-label-sm opacity-80 uppercase tracking-tighter">PIVO</span>
+</button>
+<button class="player-pill p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center text-center transition-all" onclick="selectPlayer(7, 'L. Santos', 'ALA D')" type="button">
+<span class="font-score-display text-score-display leading-none">#7</span>
+<span class="font-label-md text-label-md mt-1 truncate max-w-full">L. Santos</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">ALA D</span>
+</button>
+<button class="player-pill p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center text-center transition-all" onclick="selectPlayer(4, 'D. Rossi', 'FIXO')" type="button">
+<span class="font-score-display text-score-display leading-none">#4</span>
+<span class="font-label-md text-label-md mt-1 truncate max-w-full">D. Rossi</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">FIXO</span>
+</button>
+<button class="player-pill p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center text-center transition-all" onclick="selectPlayer(8, 'N. Vidal', 'ALA E')" type="button">
+<span class="font-score-display text-score-display leading-none">#8</span>
+<span class="font-label-md text-label-md mt-1 truncate max-w-full">N. Vidal</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">ALA E</span>
+</button>
+<button class="player-pill p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center text-center transition-all" onclick="selectPlayer(1, 'J. Ramos', 'GK')" type="button">
+<span class="font-score-display text-score-display leading-none">#1</span>
+<span class="font-label-md text-label-md mt-1 truncate max-w-full">J. Ramos</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">GOALKEEPER</span>
+</button>
+</div>
+</div>
+<!-- STEP 3: EVENT TYPE & METADATA -->
+<div class="mb-space-lg">
+<label class="block font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2">Step 3: Event Classification &amp; Detail</label>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Incident Type</span>
+<select class="w-full h-11 px-3 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm focus:outline-none focus:bg-surface-container">
+<option selected="">Goal (Open Play)</option>
+<option>Goal (10m Penalty Kick)</option>
+<option>Goal (Set Piece Corner)</option>
+<option>Yellow Card (Tactical Foul)</option>
+<option>Red Card (Direct Ejection)</option>
+<option>Foul (Accumulated Team Foul)</option>
+<option>Goalkeeper Reflex Save</option>
+</select>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Secondary (Assist / Offender)</span>
+<select class="w-full h-11 px-3 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm focus:outline-none focus:bg-surface-container">
+<option selected="">#7 L. Santos (ALA D)</option>
+<option>#4 D. Rossi (FIXO)</option>
+<option>#8 N. Vidal (ALA E)</option>
+<option>None / Solo Effort</option>
+</select>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Clock Time (Auto)</span>
+<div class="flex items-center h-11 px-3 rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-outline mr-2">schedule</span>
+<span class="font-bold">14' : 28" (1st Half)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SUBMIT / LOG ACTION -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-sm bg-surface-container-low p-space-md rounded-xl">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">broadcast_on_home</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Live API Sync: Connected to Match Hub &amp; Main Scoreboard Video Wall</span>
+</div>
+<button class="w-full sm:w-auto px-6 h-12 rounded-lg bg-primary hover:bg-tertiary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-2 shadow-md active:scale-98 transition-all" onclick="confirmIncident()" type="button">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span>CONFIRM &amp; LOG INCIDENT</span>
+</button>
+</div>
+</div>
+<!-- LIVE COURT FEED & COURT GRAPHIC -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-error animate-pulse"></span>
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Court 1 Overhead Camera • Live Tactical Feed</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">REC 1080p 60FPS</span>
+</div>
+<div class="relative w-full h-56 rounded-xl overflow-hidden bg-surface-container-high">
+<!-- Court Placeholder Media -->
+<div class="bg-cover bg-center w-full h-full flex flex-col justify-between p-space-md" data-alt="High-angle professional broadcast camera view of an indoor blue futsal court with crisp white lines, professional lighting, corporate arena signage, and motion of 5v5 players in action" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBGkK7HaB_zbB4Kdhrxl5ToqQsuZ7hFD76Bppyv28sefhX0MqCGrI-OdUxPUxIlDn9U9hV1NbDoVsJ_oTsXwDnTWzipOEfaHapJ6I_szV_G2GkicIKn4EKFMuUwO873R1wju4BzK4IDGvxXNSIss1miHwZxZ4ZIuYyHD1szkNa4_RQc5p5vcfucy34XOPvdtO4a2723jHPmSAOBTRZYMPR47K80yx7GmmQUN8WK7VmA')">
+<!-- Overlaid tactical pitch indicators -->
+<div class="flex items-center justify-between">
+<span class="px-2 py-1 rounded bg-inverse-surface/80 text-inverse-on-surface font-label-sm text-label-sm backdrop-blur-md">CAM-01 / WIDE TACTICAL</span>
+<span class="px-2 py-1 rounded bg-error text-on-error font-label-sm text-label-sm uppercase font-bold tracking-wider">LIVE FEED</span>
+</div>
+<!-- Futsal court telemetry overlay (SVG Pitch Lines) -->
+<div class="flex items-center justify-center">
+<div class="px-4 py-2 rounded-lg bg-inverse-surface/85 backdrop-blur-md text-inverse-on-surface flex items-center gap-space-md">
+<div class="text-center">
+<span class="font-label-sm text-label-sm text-surface-variant uppercase block">Falcons Zone</span>
+<span class="font-headline-md text-headline-md font-bold text-primary-fixed">ATTACKING</span>
+</div>
+<div class="w-px h-8 bg-surface-variant/30"></div>
+<div class="text-center">
+<span class="font-label-sm text-label-sm text-surface-variant uppercase block">Active Tempo</span>
+<span class="font-headline-md text-headline-md font-bold text-inverse-on-surface">118 BPM</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between text-inverse-on-surface font-label-sm text-label-sm bg-inverse-surface/60 px-3 py-1 rounded backdrop-blur-sm">
+<span>Referee VAR Monitoring: <strong>NORMAL</strong></span>
+<span>Sideline Mic: <strong>ENABLED</strong></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: OFFICIAL TIMELINE, 5v5 ROSTERS & STATS BAR (5 Cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- STATS HEAD-TO-HEAD COMPARISON -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Match Statistics Comparison</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Live Analytics</span>
+</div>
+<div class="space-y-space-sm">
+<!-- Total Shots -->
+<div>
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="font-bold text-primary">16</span>
+<span class="text-on-surface-variant font-medium">Total Shots</span>
+<span class="font-bold text-inverse-surface">14</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 53%;"></div>
+<div class="bg-secondary-container h-full ml-auto" style="width: 47%;"></div>
+</div>
+</div>
+<!-- Shots on Target -->
+<div>
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="font-bold text-primary">9</span>
+<span class="text-on-surface-variant font-medium">Shots on Target</span>
+<span class="font-bold text-inverse-surface">6</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 60%;"></div>
+<div class="bg-secondary-container h-full ml-auto" style="width: 40%;"></div>
+</div>
+</div>
+<!-- Corner Kicks -->
+<div>
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="font-bold text-primary">5</span>
+<span class="text-on-surface-variant font-medium">Corner Kicks</span>
+<span class="font-bold text-inverse-surface">4</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 55%;"></div>
+<div class="bg-secondary-container h-full ml-auto" style="width: 45%;"></div>
+</div>
+</div>
+<!-- Possession -->
+<div>
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="font-bold text-primary">54%</span>
+<span class="text-on-surface-variant font-medium">Ball Possession</span>
+<span class="font-bold text-inverse-surface">46%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 54%;"></div>
+<div class="bg-secondary-container h-full ml-auto" style="width: 46%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- ACTIVE 5v5 LINEUPS & BENCH ROTATION CARD -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm">
+<div class="flex items-center justify-between mb-space-sm pb-1">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[20px] text-primary">group</span>
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Court Lineups &amp; Discipline</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">5 On-Court • 7 Bench</span>
+</div>
+<div class="space-y-space-xs">
+<!-- Item 1: Falcon Pivo -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-2 min-w-0">
+<span class="w-6 h-6 rounded bg-primary text-on-primary font-bold text-[11px] flex items-center justify-center shrink-0">10</span>
+<div class="truncate">
+<span class="font-label-md text-label-md text-on-surface font-bold">M. Silva</span>
+<span class="text-on-surface-variant text-[11px] ml-1">Falcons • PIVO</span>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-primary font-label-sm text-label-sm font-bold">2 Goals</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">14'</span>
+</div>
+</div>
+<!-- Item 2: Warriors Defender (Yellow Card) -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-2 min-w-0">
+<span class="w-6 h-6 rounded bg-inverse-surface text-inverse-on-surface font-bold text-[11px] flex items-center justify-center shrink-0">8</span>
+<div class="truncate">
+<span class="font-label-md text-label-md text-on-surface font-bold">K. Tanaka</span>
+<span class="text-on-surface-variant text-[11px] ml-1">Warriors • FIXO</span>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="w-3.5 h-4.5 rounded bg-error-container text-on-error-container flex items-center justify-center text-[10px] font-bold" title="Yellow Card">YC</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">12'</span>
+</div>
+</div>
+<!-- Item 3: Warriors Striker -->
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-2 min-w-0">
+<span class="w-6 h-6 rounded bg-inverse-surface text-inverse-on-surface font-bold text-[11px] flex items-center justify-center shrink-0">9</span>
+<div class="truncate">
+<span class="font-label-md text-label-md text-on-surface font-bold">A. Becker</span>
+<span class="text-on-surface-variant text-[11px] ml-1">Warriors • PIVO</span>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<span class="px-1.5 py-0.5 rounded bg-surface-container text-inverse-surface font-label-sm text-label-sm font-bold">1 Goal</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm">13'</span>
+</div>
+</div>
+</div>
+</div>
+<!-- LIVE MATCH TIMELINE & OFFICIAL MATCH RECORD -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md shadow-sm flex flex-col">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[20px] text-tertiary">history</span>
+<span class="font-label-md text-label-md text-on-surface uppercase tracking-wide">Live Match Record</span>
+</div>
+<button class="font-label-sm text-label-sm text-primary hover:underline flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">download</span> Export Match Sheet
+          </button>
+</div>
+<div class="space-y-space-sm relative before:absolute before:top-2 before:bottom-2 before:left-3.5 before:w-0.5 before:bg-surface-container" id="match-record-timeline">
+<!-- Event 1: 14' GOAL FALCONS -->
+<div class="flex items-start gap-space-sm relative">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center z-10 shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">sports_soccer</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-bold">14' • GOAL! Falcons Futsal (3-2)</span>
+<span class="text-on-surface-variant text-[11px]">1st Half</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5">
+                #10 <strong>M. Silva</strong> finishes rapid counter-attack with upper-right corner volley (Assist: #7 L. Santos).
+              </p>
+</div>
+</div>
+<!-- Event 2: 11' YELLOW CARD WARRIORS -->
+<div class="flex items-start gap-space-sm relative">
+<div class="w-7 h-7 rounded-full bg-error-container text-on-error-container flex items-center justify-center z-10 shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-error font-bold">11' • YELLOW CARD Warriors FC</span>
+<span class="text-on-surface-variant text-[11px]">1st Half</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5">
+                #8 <strong>K. Tanaka</strong> cautioned for reckless sliding tackle on perimeter (Warriors Team Foul #4).
+              </p>
+</div>
+</div>
+<!-- Event 3: 9' GOAL WARRIORS -->
+<div class="flex items-start gap-space-sm relative">
+<div class="w-7 h-7 rounded-full bg-inverse-surface text-inverse-on-surface flex items-center justify-center z-10 shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">sports_soccer</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-inverse-surface font-bold">9' • GOAL! Warriors FC (2-2)</span>
+<span class="text-on-surface-variant text-[11px]">1st Half</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5">
+                #9 <strong>A. Becker</strong> toe poke finish through goalkeeper legs following sideline kick-in restart.
+              </p>
+</div>
+</div>
+<!-- Event 4: 6' GK SAVE FALCONS -->
+<div class="flex items-start gap-space-sm relative">
+<div class="w-7 h-7 rounded-full bg-surface-container-highest text-primary flex items-center justify-center z-10 shrink-0">
+<span class="material-symbols-outlined text-[14px]">shield</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-tertiary font-bold">6' • GK SAVE Falcons Futsal</span>
+<span class="text-on-surface-variant text-[11px]">1st Half</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5">
+                #1 <strong>J. Ramos</strong> makes a miraculous point-blank reflex spread save on 6-meter arc.
+              </p>
+</div>
+</div>
+<!-- Event 5: 4' GOAL FALCONS -->
+<div class="flex items-start gap-space-sm relative">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center z-10 shrink-0">
+<span class="material-symbols-outlined text-[14px]">sports_soccer</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-bold">4' • GOAL! Falcons Futsal (2-1)</span>
+<span class="text-on-surface-variant text-[11px]">1st Half</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5">
+                #7 <strong>L. Santos</strong> direct low blast from 12-meter free kick around the two-man wall.
+              </p>
+</div>
+</div>
+<!-- Event 6: 2' GOAL WARRIORS -->
+<div class="flex items-start gap-space-sm relative">
+<div class="w-7 h-7 rounded-full bg-inverse-surface text-inverse-on-surface flex items-center justify-center z-10 shrink-0">
+<span class="material-symbols-outlined text-[14px]">sports_soccer</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-inverse-surface font-bold">2' • GOAL! Warriors FC (1-1)</span>
+<span class="text-on-surface-variant text-[11px]">1st Half</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5">
+                #11 <strong>R. Gomez</strong> low drive inside near post after high pressing steal.
+              </p>
+</div>
+</div>
+<!-- Event 7: 1' GOAL FALCONS -->
+<div class="flex items-start gap-space-sm relative">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center z-10 shrink-0">
+<span class="material-symbols-outlined text-[14px]">sports_soccer</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-bold">1' • GOAL! Falcons Futsal (1-0)</span>
+<span class="text-on-surface-variant text-[11px]">1st Half</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5">
+                #10 <strong>M. Silva</strong> intercepts pass at halfway line and finishes clinical 1-on-1.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- INTERACTIVE CLIENT-SIDE LOGIC -->
+<script>
+    let isRunning = true;
+    let clockSeconds = 14 * 60 + 32;
+    let homeScore = 3;
+    let awayScore = 2;
+    let activeTeam = 'falcons';
+    let selectedPlayerNum = 10;
+    let selectedPlayerName = 'M. Silva';
+
+    const clockDisplay = document.getElementById('match-clock-time');
+    const clockToggleBtn = document.getElementById('clock-toggle-btn');
+    const clockPlayIcon = document.getElementById('clock-play-icon');
+    const clockStatusLabel = document.getElementById('clock-status-label');
+    const homeScoreEl = document.getElementById('home-score-display');
+    const awayScoreEl = document.getElementById('away-score-display');
+    const selectedTeamLabel = document.getElementById('selected-team-label');
+    const teamFalconsBtn = document.getElementById('team-opt-falcons');
+    const teamWarriorsBtn = document.getElementById('team-opt-warriors');
+    const teamFalconsCheck = document.getElementById('team-opt-falcons-check');
+    const teamWarriorsCheck = document.getElementById('team-opt-warriors-check');
+
+    function formatTime(secs) {
+      const m = Math.floor(secs / 60).toString().padStart(2, '0');
+      const s = (secs % 60).toString().padStart(2, '0');
+      return m + ':' + s;
+    }
+
+    function toggleClock() {
+      isRunning = !isRunning;
+      if (isRunning) {
+        clockPlayIcon.textContent = 'pause';
+        clockStatusLabel.textContent = 'Pause';
+      } else {
+        clockPlayIcon.textContent = 'play_arrow';
+        clockStatusLabel.textContent = 'Resume';
+      }
+    }
+
+    clockToggleBtn.addEventListener('click', toggleClock);
+
+    function adjustClock(seconds) {
+      clockSeconds = Math.max(0, clockSeconds + seconds);
+      clockDisplay.textContent = formatTime(clockSeconds);
+    }
+
+    function selectTeam(team) {
+      activeTeam = team;
+      if (team === 'falcons') {
+        selectedTeamLabel.textContent = 'Falcons Futsal';
+        teamFalconsBtn.className = 'p-3 rounded-lg bg-primary-container text-on-primary flex items-center justify-between font-label-lg text-label-lg transition-all shadow-sm';
+        teamFalconsCheck.classList.remove('opacity-0');
+        
+        teamWarriorsBtn.className = 'p-3 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container flex items-center justify-between font-label-lg text-label-lg transition-all';
+        teamWarriorsCheck.classList.add('opacity-0');
+      } else {
+        selectedTeamLabel.textContent = 'Warriors FC';
+        teamWarriorsBtn.className = 'p-3 rounded-lg bg-surface-container-highest text-on-surface flex items-center justify-between font-label-lg text-label-lg transition-all shadow-sm';
+        teamWarriorsCheck.classList.remove('opacity-0');
+
+        teamFalconsBtn.className = 'p-3 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container flex items-center justify-between font-label-lg text-label-lg transition-all';
+        teamFalconsCheck.classList.add('opacity-0');
+      }
+    }
+
+    function selectPlayer(num, name, role) {
+      selectedPlayerNum = num;
+      selectedPlayerName = name;
+      
+      const pills = document.querySelectorAll('.player-pill');
+      pills.forEach(p => {
+        p.className = 'player-pill p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface flex flex-col items-center justify-center text-center transition-all';
+      });
+
+      if (window.event && window.event.currentTarget) {
+        window.event.currentTarget.className = 'player-pill p-2.5 rounded-lg bg-primary text-on-primary flex flex-col items-center justify-center text-center transition-all shadow-sm';
+      }
+    }
+
+    function triggerQuickAction(action) {
+      if (action === 'GOAL') {
+        if (activeTeam === 'falcons') {
+          homeScore += 1;
+          homeScoreEl.textContent = homeScore;
+        } else {
+          awayScore += 1;
+          awayScoreEl.textContent = awayScore;
+        }
+        appendTimelineEvent('GOAL', `${activeTeam === 'falcons' ? 'Falcons Futsal' : 'Warriors FC'} (${homeScore}-${awayScore})`, `#${selectedPlayerNum} ${selectedPlayerName} score verified by court ref.`);
+      } else if (action === 'ASSIST') {
+        appendTimelineEvent('ASSIST', `${activeTeam === 'falcons' ? 'Falcons Futsal' : 'Warriors FC'}`, `Key assist registered for #${selectedPlayerNum} ${selectedPlayerName}.`);
+      } else if (action === 'SAVE') {
+        appendTimelineEvent('SAVE', `${activeTeam === 'falcons' ? 'Falcons Futsal' : 'Warriors FC'}`, `Crucial stop credited to active goalkeeper.`);
+      } else if (action === 'FOUL') {
+        appendTimelineEvent('FOUL', `${activeTeam === 'falcons' ? 'Falcons Futsal' : 'Warriors FC'}`, `Team Foul registered against #${selectedPlayerNum} ${selectedPlayerName}.`);
+      } else if (action === 'SUB') {
+        appendTimelineEvent('SUB', '5v5 Rotation', 'Court substitution executed through center zone.');
+      }
+    }
+
+    function confirmIncident() {
+      triggerQuickAction('GOAL');
+    }
+
+    function undoLastAction() {
+      const container = document.getElementById('match-record-timeline');
+      if (container && container.firstElementChild) {
+        container.removeChild(container.firstElementChild);
+      }
+    }
+
+    function appendTimelineEvent(type, heading, text) {
+      const container = document.getElementById('match-record-timeline');
+      const item = document.createElement('div');
+      item.className = 'flex items-start gap-space-sm relative animate-fadeIn';
+      
+      let icon = 'sports_soccer';
+      let iconBg = 'bg-primary text-on-primary';
+      let badgeColor = 'text-primary';
+
+      if (type === 'FOUL') {
+        icon = 'warning';
+        iconBg = 'bg-error-container text-on-error-container';
+        badgeColor = 'text-error';
+      } else if (type === 'SAVE') {
+        icon = 'shield';
+        iconBg = 'bg-surface-container-highest text-primary';
+        badgeColor = 'text-tertiary';
+      } else if (type === 'SUB') {
+        icon = 'sync_alt';
+        iconBg = 'bg-surface-container text-on-surface';
+        badgeColor = 'text-on-surface';
+      }
+
+      item.innerHTML = `
+        <div class="w-7 h-7 rounded-full ${iconBg} flex items-center justify-center z-10 shrink-0 shadow-sm">
+          <span class="material-symbols-outlined text-[14px]">${icon}</span>
+        </div>
+        <div class="p-2.5 rounded-lg bg-surface-container-low flex-1">
+          <div class="flex items-center justify-between">
+            <span class="font-label-md text-label-md ${badgeColor} font-bold">14' &bull; ${heading}</span>
+            <span class="text-on-surface-variant text-[11px]">Just Now</span>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface mt-0.5">${text}</p>
+        </div>
+      `;
+      container.insertBefore(item, container.firstChild);
+    }
+
+    // Interval to tick running futsal clock down
+    setInterval(() => {
+      if (isRunning && clockSeconds > 0) {
+        clockSeconds--;
+        clockDisplay.textContent = formatTime(clockSeconds);
+      }
+    }, 1000);
+  </script>
+</div></main></div></body></html>

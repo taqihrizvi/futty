@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #f8f9ff;
+  --color-surface: #f8f9ff;
+  --color-surface-dim: #d2daeb;
+  --color-surface-bright: #f8f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eff3ff;
+  --color-surface-container: #e6eeff;
+  --color-surface-container-high: #e1e8f9;
+  --color-surface-container-highest: #dbe3f3;
+  --color-on-surface: #141c28;
+  --color-on-surface-variant: #434651;
+  --color-inverse-surface: #29313d;
+  --color-inverse-on-surface: #ebf1ff;
+  --color-outline: #747783;
+  --color-outline-variant: #c4c6d3;
+  --color-primary: #113d8d;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #3155a6;
+  --color-on-primary-container: #bfcfff;
+  --color-primary-fixed: #dae2ff;
+  --color-on-primary-fixed: #001847;
+  --color-on-primary-fixed-variant: #1a4293;
+  --color-secondary: #5e4eb7;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #a192ff;
+  --color-secondary-fixed: #e5deff;
+  --color-on-secondary-fixed: #190064;
+  --color-on-secondary-fixed-variant: #46359d;
+  --color-tertiary: #013c93;
+  --color-tertiary-container: #2a55ac;
+  --color-on-tertiary: #ffffff;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-success: #22a06b;
+  --color-warning: #f5a623;
+  --color-navy: #17233c;
+  --color-line: #e4e7ec;
+  --color-slate: #667085;
+  --color-pitch: #f8f9ff;
+  --color-pitch-2: #ffffff;
+  --color-pitch-3: #eff3ff;
+  --color-ink: #141c28;
+  --color-muted: #667085;
+  --color-accent: #113d8d;
+  --color-accent-ink: #ffffff;
+  --color-live: #ba1a1a;
+  --color-gold: #f5a623;
+  --color-gold-ink: #17233c;
+  --font-display: var(--font-chivo), "Chivo", sans-serif;
+  --font-body: var(--font-hanken), "Hanken Grotesk", sans-serif;
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-lg: 1.5rem;
+  --spacing-space-xl: 2.25rem;
+  --shadow-card: 0 2px 4px 0 rgba(23, 35, 60, 0.04), 0 1px 2px 0 rgba(23, 35, 60, 0.02);
+  --shadow-lift: 0 8px 16px -4px rgba(23, 35, 60, 0.08), 0 2px 6px -1px rgba(23, 35, 60, 0.04);
+}
+
+html,
+body {
+  background: #f8f9ff;
+  color: #141c28;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 22px;
+}
+
+button,
+a,
+input,
+select {
+  touch-action: manipulation;
+}
+
+input,
+select {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #4169c1;
+  outline-offset: 2px;
+}
+
+.rounded-xl.bg-surface-container-lowest,
+.rounded-xl.bg-surface-container-low,
+.rounded-lg.bg-surface-container-lowest,
+.rounded-lg.bg-surface-container-low,
+.rounded-2xl.bg-pitch-2,
+.rounded-2xl.bg-pitch-3 {
+  border: 1px solid #e4e7ec;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+  line-height: 1;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.text-display-hero {
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 52px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.text-headline-xl {
+  font-family: var(--font-display);
+  font-size: 32px;
+  line-height: 38px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.text-headline-lg {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.text-headline-md {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.text-score-display {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.text-label-lg {
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.text-label-md {
+  font-family: var(--font-display);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.text-label-sm {
+  font-family: var(--font-display);
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.text-body-lg {
+  font-size: 18px;
+  line-height: 26px;
+}
+
+.text-body-sm {
+  font-size: 13px;
+  line-height: 18px;
+}
