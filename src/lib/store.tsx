@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from "react";
+import { Loader } from "@/components/loader";
 import { elapsedSeconds } from "./format";
 import { uid } from "./ids";
 import type { AppState, CardColor, MatchEvent, NewTournamentInput, Player } from "./types";
@@ -383,9 +384,7 @@ export function DataGate({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {!snap.booted ? (
-        <p className="text-body-lg text-on-surface">Loading matches from the database…</p>
-      ) : null}
+      {!snap.booted ? <Loader /> : null}
       {snap.error && snap.state.tournaments.length === 0 ? (
         <div>
           <h1 className="text-headline-lg">Futty could not reach the database.</h1>

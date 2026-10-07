@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icon } from "./icon";
+import { displayNameFromEmail } from "@/lib/display-name";
 import { signOut } from "@/lib/sign-out";
 import { useApp } from "@/lib/store";
 
@@ -61,6 +62,8 @@ export function AppNav() {
     };
   }, []);
 
+  const username = account ? displayNameFromEmail(account.email) : "Organizer";
+
   const linkClass = (href: string) =>
     active(pathname, href)
       ? "flex items-center gap-3 rounded-lg bg-primary-container px-4 py-2.5 font-bold text-on-primary"
@@ -112,7 +115,7 @@ export function AppNav() {
               <Icon name="person" className="text-[18px] text-on-primary" />
             </div>
             <div className="flex flex-col truncate">
-              <span className="truncate text-label-md font-semibold">{account?.name ?? "Organizer"}</span>
+              <span className="truncate text-label-md font-semibold">{username}</span>
               <span className="truncate text-label-sm text-outline">{account?.email ?? "Signed in"}</span>
             </div>
           </div>
@@ -159,7 +162,7 @@ export function AppNav() {
               <Icon name="person" className="text-[18px] text-on-primary" />
             </div>
             <div className="hidden flex-col text-left md:flex">
-              <span className="text-label-md leading-none font-semibold">{account?.name ?? "Organizer"}</span>
+              <span className="text-label-md leading-none font-semibold">{username}</span>
               <span className="mt-0.5 text-label-sm leading-none text-outline">
                 {account?.email ?? "Signed in"}
               </span>

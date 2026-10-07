@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { displayNameFromEmail } from "@/lib/display-name";
 import { sessionCookieName, verifySessionToken } from "@/lib/session";
 import { beginRequest, jsonError } from "@/server/http";
 import { ensureReady } from "@/server/repository";
@@ -14,7 +15,7 @@ export async function GET() {
     if (!session) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
     const user = await findUserByEmail(session.email);
     if (!user) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
-    return NextResponse.json({ email: user.email, name: user.name });
+    return NextResponse.json({ email: user.email, name: displayNameFromEmail(user.email) });
   } catch (error) {
     return jsonError(error, 500);
   }
