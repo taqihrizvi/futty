@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useSyncExternalStore, ty
 import { Loader } from "@/components/loader";
 import { elapsedSeconds } from "./format";
 import { uid } from "./ids";
-import type { AppState, CardColor, MatchEvent, NewTournamentInput, Player } from "./types";
+import type { AppState, CardColor, MatchEvent, NewTournamentInput, Player, TournamentDetails } from "./types";
 
 type Snapshot = {
   state: AppState;
@@ -36,6 +36,7 @@ type StoreApi = {
   removePlayer: (id: string) => void;
   removeTeam: (id: string) => void;
   removeTournament: (id: string) => void;
+  updateTournament: (id: string, details: TournamentDetails) => void;
   publish: (input: NewTournamentInput) => Promise<string>;
   reset: () => void;
 };
@@ -381,6 +382,30 @@ const actions: Omit<StoreApi, "state"> = {
         };
       },
       () => send<AppState>(`/api/tournaments/${id}`, {}, "DELETE"),
+    );
+  },
+  updateTournament: (id, details) => {
+    const next = {
+      name: details.name.trim(),
+      city: details.city.trim(),
+      venue: details.venue.trim(),
+      format: details.format,
+      startLabel: details.startLabel.trim(),
+      endLabel: details.endLabel.trim(),
+    };
+    void save(
+      (prev) => ({
+        ...prev,
+        tournaments: prev.tournaments.map((tournament) =>
+          tournament.id === id ? { ...tournament, ...next } : tournament,
+        ),
+        matches: prev.matches.map((match) =>
+          match.tournamentId === id && match.status === "scheduled" && next.venue
+            ? { ...match, venue: next.venue }
+            : match,
+        ),
+      }),
+      () => send<AppState>(`/api/tournaments/${id}`, next, "PATCH"),
     );
   },
   publish: (input) =>

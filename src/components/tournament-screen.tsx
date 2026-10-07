@@ -20,12 +20,14 @@ import {
 } from "@/lib/derive";
 import { formatLabel } from "@/lib/format";
 import { useApp } from "@/lib/store";
+import { TournamentEditor } from "@/components/tournament-editor";
 
 export function TournamentScreen({ slug }: { slug: string }) {
   const { state, removeTournament } = useApp();
   const router = useRouter();
   const tournament = tournamentBySlug(state, slug);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   if (!tournament) {
     return (
@@ -66,6 +68,13 @@ export function TournamentScreen({ slug }: { slug: string }) {
           `${tournament.startLabel} – ${tournament.endLabel}`
         }
       />
+      <button
+        type="button"
+        onClick={() => setEditing(true)}
+        className="mb-6 min-h-12 rounded-2xl bg-primary px-4 text-label-lg font-semibold text-on-primary"
+      >
+        Edit tournament
+      </button>
 
       <section>
         <SectionHeading title="Live matches" />
@@ -243,6 +252,7 @@ export function TournamentScreen({ slug }: { slug: string }) {
           </button>
         </BottomSheet>
       ) : null}
+      {editing ? <TournamentEditor tournament={tournament} onClose={() => setEditing(false)} /> : null}
     </div>
   );
 }

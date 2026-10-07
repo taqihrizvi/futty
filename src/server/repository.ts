@@ -3,7 +3,7 @@ import path from "node:path";
 import type { PoolClient } from "pg";
 import { publishTournament } from "@/lib/publish";
 import { createSeed } from "@/lib/seed";
-import type { AppState, Match, MatchEvent, NewTournamentInput, Player } from "@/lib/types";
+import type { AppState, Format, Match, MatchEvent, NewTournamentInput, Player, TournamentDetails } from "@/lib/types";
 import { HALF_LIMIT_SECONDS } from "@/lib/format";
 import { getPool } from "./db";
 import { seedOrganizer } from "./users";
@@ -305,6 +305,43 @@ export async function removeTournament(id: string) {
   await ensureReady();
   const removed = await getPool().query("DELETE FROM tournaments WHERE id = $1", [id]);
   if (removed.rowCount === 0) throw new Error("Tournament not found");
+  return loadState();
+}
+
+const FORMATS = new Set<Format>(["5v5", "6v6", "7v7", "11v11"]);
+
+export async function updateTournament(id: string, patch: TournamentDetails) {
+  await ensureReady();
+  const name = patch.name?.trim() ?? "";
+  if (!name) throw new Error("Add a tournament name");
+  if (!FORMATS.has(patch.format)) throw new Error("Choose a format");
+  const city = patch.city?.trim() ?? "";
+  const venue = patch.venue?.trim() ?? "";
+  const startLabel = patch.startLabel?.trim() ?? "";
+  const endLabel = patch.endLabel?.trim() ?? "";
+  const client = await getPool().connect();
+  try {
+    await client.query("BEGIN");
+    const updated = await client.query(
+      `UPDATE tournaments
+       SET name = $2, city = $3, venue = $4, format = $5, start_label = $6, end_label = $7
+       WHERE id = $1`,
+      [id, name, city, venue, patch.format, startLabel, endLabel],
+    );
+    if (updated.rowCount === 0) throw new Error("Tournament not found");
+    if (venue) {
+      await client.query(
+        "UPDATE matches SET venue = $2 WHERE tournament_id = $1 AND status = 'scheduled'",
+        [id, venue],
+      );
+    }
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
   return loadState();
 }
 

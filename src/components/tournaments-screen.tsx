@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { EmptyNote, PageHeader } from "@/components/ui";
+import { TournamentEditor } from "@/components/tournament-editor";
 import { tournamentPhase } from "@/lib/derive";
 import { formatLabel } from "@/lib/format";
 import { useApp } from "@/lib/store";
@@ -12,6 +13,7 @@ import type { Tournament } from "@/lib/types";
 export function TournamentsScreen() {
   const { state, removeTournament } = useApp();
   const [pending, setPending] = useState<Tournament | null>(null);
+  const [editing, setEditing] = useState<Tournament | null>(null);
 
   return (
     <div>
@@ -46,17 +48,27 @@ export function TournamentsScreen() {
                   {tournament.city} · {tournament.teamIds.length} teams · {tournament.groups.length} groups
                 </p>
               </Link>
-              <button
-                type="button"
-                onClick={() => setPending(tournament)}
-                className="shrink-0 self-center rounded-xl px-3 py-2 text-label-md font-semibold text-error"
-              >
-                Delete
-              </button>
+              <div className="flex shrink-0 flex-col justify-center">
+                <button
+                  type="button"
+                  onClick={() => setEditing(tournament)}
+                  className="rounded-xl px-3 py-2 text-label-md font-semibold text-primary"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPending(tournament)}
+                  className="rounded-xl px-3 py-2 text-label-md font-semibold text-error"
+                >
+                  Delete
+                </button>
+              </div>
             </article>
           ))}
         </div>
       )}
+      {editing ? <TournamentEditor tournament={editing} onClose={() => setEditing(null)} /> : null}
       {pending ? (
         <BottomSheet title="Delete tournament" onClose={() => setPending(null)}>
           <p className="text-base text-on-surface-variant">

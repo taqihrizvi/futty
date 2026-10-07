@@ -105,6 +105,15 @@ export interface NewTournamentInput {
   rounds: RoundId[];
 }
 
+export interface TournamentDetails {
+  name: string;
+  city: string;
+  venue: string;
+  format: Format;
+  startLabel: string;
+  endLabel: string;
+}
+
 export type Metric =
   | "goals"
   | "assists"
