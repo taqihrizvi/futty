@@ -17,7 +17,12 @@ const STEPS = [
   "Publish",
 ] as const;
 
-const FORMATS: Format[] = ["5v5", "7v7", "11v11"];
+const FORMATS: { id: Format; label: string }[] = [
+  { id: "5v5", label: "5v5" },
+  { id: "6v6", label: "6-a-side" },
+  { id: "7v7", label: "7v7" },
+  { id: "11v11", label: "11v11" },
+];
 const ROUNDS: { id: RoundId; label: string }[] = [
   { id: "quarter-final", label: "Quarter-final" },
   { id: "semi-final", label: "Semi-final" },
@@ -204,16 +209,16 @@ export function WizardScreen() {
         <div className="grid gap-3">
           {FORMATS.map((item) => (
             <button
-              key={item}
+              key={item.id}
               type="button"
-              onClick={() => setFormat(item)}
+              onClick={() => setFormat(item.id)}
               className={
-                format === item
+                format === item.id
                   ? "min-h-16 rounded-2xl bg-accent px-4 text-xl font-semibold text-accent-ink"
                   : "min-h-16 rounded-2xl bg-pitch-2 px-4 text-xl font-semibold"
               }
             >
-              {item}
+              {item.label}
             </button>
           ))}
         </div>
@@ -275,7 +280,7 @@ export function WizardScreen() {
         <dl className="grid gap-3 rounded-2xl bg-pitch-2 p-4 text-base">
           <Row term="Tournament" value={name} />
           <Row term="Place" value={`${city}${venue ? ` · ${venue}` : ""}`} />
-          <Row term="Format" value={format} />
+          <Row term="Format" value={FORMATS.find((item) => item.id === format)?.label ?? format} />
           <Row term="Teams" value={String(teams.length)} />
           <Row term="Groups" value={String(Math.min(groupCount, teams.length))} />
           <Row term="Qualify" value={`${qualify} per group`} />

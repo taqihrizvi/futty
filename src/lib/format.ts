@@ -12,6 +12,11 @@ export const REGULATION_SECONDS = 15 * 60;
 export const ADDED_TIME_SECONDS = 2 * 60;
 export const HALF_LIMIT_SECONDS = REGULATION_SECONDS + ADDED_TIME_SECONDS;
 
+export function formatLabel(format: string) {
+  if (format === "6v6") return "6-a-side";
+  return format;
+}
+
 export function formatClock(totalSeconds: number) {
   const safe = Math.max(0, Math.floor(totalSeconds));
   const minutes = Math.floor(safe / 60);

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS tournaments (
   name text NOT NULL,
   city text NOT NULL,
   venue text NOT NULL,
-  format text NOT NULL CHECK (format IN ('5v5', '7v7', '11v11')),
+  format text NOT NULL CHECK (format IN ('5v5', '6v6', '7v7', '11v11')),
   start_label text NOT NULL,
   end_label text NOT NULL,
   starts_at timestamptz,
@@ -106,6 +106,9 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 ALTER TABLE players ALTER COLUMN position DROP NOT NULL;
+
+ALTER TABLE tournaments DROP CONSTRAINT IF EXISTS tournaments_format_check;
+ALTER TABLE tournaments ADD CONSTRAINT tournaments_format_check CHECK (format IN ('5v5', '6v6', '7v7', '11v11'));
 
 CREATE INDEX IF NOT EXISTS matches_tournament_idx ON matches (tournament_id, kickoff_at);
 CREATE INDEX IF NOT EXISTS match_events_match_idx ON match_events (match_id, created_at);

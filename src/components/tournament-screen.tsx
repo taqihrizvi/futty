@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { BottomSheet } from "@/components/bottom-sheet";
 import { Bracket } from "@/components/bracket";
 import { Deferred } from "@/components/deferred";
 import { LeaderList } from "@/components/leaders";
@@ -15,11 +18,14 @@ import {
   tournamentBySlug,
   tournamentPhase,
 } from "@/lib/derive";
+import { formatLabel } from "@/lib/format";
 import { useApp } from "@/lib/store";
 
 export function TournamentScreen({ slug }: { slug: string }) {
-  const { state } = useApp();
+  const { state, removeTournament } = useApp();
+  const router = useRouter();
   const tournament = tournamentBySlug(state, slug);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   if (!tournament) {
     return (
@@ -53,7 +59,7 @@ export function TournamentScreen({ slug }: { slug: string }) {
   return (
     <div>
       <PageHeader
-        eyebrow={`${tournamentPhase(state, tournament)} · ${tournament.format}`}
+        eyebrow={`${tournamentPhase(state, tournament)} · ${formatLabel(tournament.format)}`}
         title={tournament.name}
         detail={
           [tournament.city, tournament.venue].filter(Boolean).join(" · ") ||
@@ -213,6 +219,30 @@ export function TournamentScreen({ slug }: { slug: string }) {
           />
         </section>
       </Deferred>
+      <button
+        type="button"
+        onClick={() => setConfirmDelete(true)}
+        className="mt-8 min-h-14 w-full rounded-2xl bg-error px-4 text-lg font-semibold text-on-primary"
+      >
+        Delete tournament
+      </button>
+      {confirmDelete ? (
+        <BottomSheet title="Delete tournament" onClose={() => setConfirmDelete(false)}>
+          <p className="text-base text-on-surface-variant">
+            Delete {tournament.name}? This removes its matches, groups, and standings. Squads stay in Teams.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              removeTournament(tournament.id);
+              router.push("/tournaments");
+            }}
+            className="mt-4 min-h-14 w-full rounded-2xl bg-error px-4 text-lg font-semibold text-on-primary"
+          >
+            Delete tournament
+          </button>
+        </BottomSheet>
+      ) : null}
     </div>
   );
 }

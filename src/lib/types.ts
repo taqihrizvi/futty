@@ -1,4 +1,4 @@
-export type Format = "5v5" | "7v7" | "11v11";
+export type Format = "5v5" | "6v6" | "7v7" | "11v11";
 
 export type MatchStatus = "scheduled" | "live" | "finished";
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { Avatar, PageHeader } from "@/components/ui";
@@ -20,10 +21,12 @@ type Draft = {
 
 export function TeamScreen({ teamId }: { teamId: string }) {
   const app = useApp();
+  const router = useRouter();
   const team = teamById(app.state, teamId);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [moving, setMoving] = useState<Player | null>(null);
   const [removing, setRemoving] = useState<Player | null>(null);
+  const [removingTeam, setRemovingTeam] = useState(false);
 
   if (!team) {
     return (
@@ -44,6 +47,13 @@ export function TeamScreen({ teamId }: { teamId: string }) {
   return (
     <div>
       <PageHeader title={team.name} detail={team.city || undefined} />
+      <button
+        type="button"
+        onClick={() => setRemovingTeam(true)}
+        className="mb-4 min-h-12 rounded-2xl px-4 text-label-lg font-semibold text-error"
+      >
+        Delete team
+      </button>
       <button
         type="button"
         onClick={() =>
@@ -226,6 +236,23 @@ export function TeamScreen({ teamId }: { teamId: string }) {
             className="mt-4 min-h-14 w-full rounded-2xl bg-live px-4 text-lg font-semibold text-white"
           >
             Remove player
+          </button>
+        </BottomSheet>
+      ) : null}
+      {removingTeam ? (
+        <BottomSheet title="Delete team" onClose={() => setRemovingTeam(false)}>
+          <p className="text-base text-on-surface-variant">
+            Delete {team.name}? This removes the squad and its players. Fixtures keep their scores, with this side left open.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              app.removeTeam(team.id);
+              router.push("/teams");
+            }}
+            className="mt-4 min-h-14 w-full rounded-2xl bg-error px-4 text-lg font-semibold text-on-primary"
+          >
+            Delete team
           </button>
         </BottomSheet>
       ) : null}

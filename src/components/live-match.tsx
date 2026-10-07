@@ -6,7 +6,7 @@ import { BottomSheet } from "@/components/bottom-sheet";
 import { useNow } from "@/components/deferred";
 import { Icon, initials } from "@/components/icon";
 import { matchLabel, playerById, playersForTeam, sideTeam, tournamentById } from "@/lib/derive";
-import { elapsedSeconds, HALF_LIMIT_SECONDS, periodClock, REGULATION_SECONDS } from "@/lib/format";
+import { elapsedSeconds, formatLabel, HALF_LIMIT_SECONDS, periodClock, REGULATION_SECONDS } from "@/lib/format";
 import { useApp } from "@/lib/store";
 import type { CardColor, EventKind } from "@/lib/types";
 
@@ -87,7 +87,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
             <span className="truncate">{match.venue}</span>
           </div>
           <span className="hidden text-body-sm text-on-surface-variant sm:inline">
-            {matchLabel(app.state, match)} · {tournament?.format ?? "5v5"}
+            {matchLabel(app.state, match)} · {formatLabel(tournament?.format ?? "5v5")}
           </span>
         </div>
         <div className="flex items-center gap-1 rounded-md bg-surface-container-high px-2.5 py-1 text-label-sm text-primary">

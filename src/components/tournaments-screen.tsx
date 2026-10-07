@@ -1,12 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { BottomSheet } from "@/components/bottom-sheet";
 import { EmptyNote, PageHeader } from "@/components/ui";
 import { tournamentPhase } from "@/lib/derive";
+import { formatLabel } from "@/lib/format";
 import { useApp } from "@/lib/store";
+import type { Tournament } from "@/lib/types";
 
 export function TournamentsScreen() {
-  const { state } = useApp();
+  const { state, removeTournament } = useApp();
+  const [pending, setPending] = useState<Tournament | null>(null);
 
   return (
     <div>
@@ -25,26 +30,50 @@ export function TournamentsScreen() {
       ) : (
         <div className="grid gap-3">
           {state.tournaments.map((tournament) => (
-            <Link
+            <article
               key={tournament.id}
-              href={`/tournaments/${tournament.slug}`}
-              className="rounded-xl bg-surface-container-lowest p-4 shadow-sm"
+              className="flex items-stretch gap-2 rounded-xl bg-surface-container-lowest p-4 shadow-sm"
             >
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold uppercase tracking-wide text-accent">
-                  {tournamentPhase(state, tournament)}
+              <Link href={`/tournaments/${tournament.slug}`} className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-accent">
+                    {tournamentPhase(state, tournament)}
+                  </p>
+                  <p className="text-sm font-semibold text-muted">{formatLabel(tournament.format)}</p>
+                </div>
+                <h2 className="mt-1 text-xl font-semibold">{tournament.name}</h2>
+                <p className="mt-1 text-base text-muted">
+                  {tournament.city} · {tournament.teamIds.length} teams · {tournament.groups.length} groups
                 </p>
-                <p className="text-sm font-semibold text-muted">{tournament.format}</p>
-              </div>
-              <h2 className="mt-1 text-xl font-semibold">{tournament.name}</h2>
-              <p className="mt-1 text-base text-muted">
-                {tournament.city} · {tournament.teamIds.length} teams ·{" "}
-                {tournament.groups.length} groups
-              </p>
-            </Link>
+              </Link>
+              <button
+                type="button"
+                onClick={() => setPending(tournament)}
+                className="shrink-0 self-center rounded-xl px-3 py-2 text-label-md font-semibold text-error"
+              >
+                Delete
+              </button>
+            </article>
           ))}
         </div>
       )}
+      {pending ? (
+        <BottomSheet title="Delete tournament" onClose={() => setPending(null)}>
+          <p className="text-base text-on-surface-variant">
+            Delete {pending.name}? This removes its matches, groups, and standings. Squads stay in Teams.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              removeTournament(pending.id);
+              setPending(null);
+            }}
+            className="mt-4 min-h-14 w-full rounded-2xl bg-error px-4 text-lg font-semibold text-on-primary"
+          >
+            Delete tournament
+          </button>
+        </BottomSheet>
+      ) : null}
     </div>
   );
 }

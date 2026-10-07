@@ -274,6 +274,40 @@ export async function removePlayer(id: string) {
   return loadState();
 }
 
+export async function removeTeam(id: string) {
+  await ensureReady();
+  const client = await getPool().connect();
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      `DELETE FROM match_events
+       WHERE team_id = $1
+          OR player_id IN (SELECT id FROM players WHERE team_id = $1)
+          OR related_player_id IN (SELECT id FROM players WHERE team_id = $1)`,
+      [id],
+    );
+    await client.query("UPDATE matches SET home_team_id = NULL WHERE home_team_id = $1", [id]);
+    await client.query("UPDATE matches SET away_team_id = NULL WHERE away_team_id = $1", [id]);
+    await client.query("DELETE FROM settings WHERE key = 'my_team_id' AND value = $1", [id]);
+    const removed = await client.query("DELETE FROM teams WHERE id = $1", [id]);
+    if (removed.rowCount === 0) throw new Error("Team not found");
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+  return loadState();
+}
+
+export async function removeTournament(id: string) {
+  await ensureReady();
+  const removed = await getPool().query("DELETE FROM tournaments WHERE id = $1", [id]);
+  if (removed.rowCount === 0) throw new Error("Tournament not found");
+  return loadState();
+}
+
 export async function setMyTeam(teamId: string | null) {
   await ensureReady();
   if (!teamId) {

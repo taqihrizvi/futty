@@ -34,6 +34,8 @@ type StoreApi = {
   addPlayer: (player: Omit<Player, "id">) => void;
   updatePlayer: (id: string, patch: Partial<Omit<Player, "id">>) => void;
   removePlayer: (id: string) => void;
+  removeTeam: (id: string) => void;
+  removeTournament: (id: string) => void;
   publish: (input: NewTournamentInput) => Promise<string>;
   reset: () => void;
 };
@@ -330,6 +332,55 @@ const actions: Omit<StoreApi, "state"> = {
         players: prev.players.filter((player) => player.id !== id),
       }),
       () => send<AppState>(`/api/players/${id}`, {}, "DELETE"),
+    );
+  },
+  removeTeam: (id) => {
+    void save(
+      (prev) => {
+        const playerIds = new Set(prev.players.filter((player) => player.teamId === id).map((player) => player.id));
+        return {
+          ...prev,
+          teams: prev.teams.filter((team) => team.id !== id),
+          players: prev.players.filter((player) => player.teamId !== id),
+          myTeamId: prev.myTeamId === id ? null : prev.myTeamId,
+          tournaments: prev.tournaments.map((tournament) => ({
+            ...tournament,
+            teamIds: tournament.teamIds.filter((teamId) => teamId !== id),
+            groups: tournament.groups.map((group) => ({
+              ...group,
+              teamIds: group.teamIds.filter((teamId) => teamId !== id),
+            })),
+          })),
+          matches: prev.matches.map((match) => ({
+            ...match,
+            homeTeamId: match.homeTeamId === id ? null : match.homeTeamId,
+            awayTeamId: match.awayTeamId === id ? null : match.awayTeamId,
+          })),
+          events: prev.events.filter(
+            (event) =>
+              event.teamId !== id &&
+              !playerIds.has(event.playerId) &&
+              !(event.relatedPlayerId && playerIds.has(event.relatedPlayerId)),
+          ),
+        };
+      },
+      () => send<AppState>(`/api/teams/${id}`, {}, "DELETE"),
+    );
+  },
+  removeTournament: (id) => {
+    void save(
+      (prev) => {
+        const matchIds = new Set(
+          prev.matches.filter((match) => match.tournamentId === id).map((match) => match.id),
+        );
+        return {
+          ...prev,
+          tournaments: prev.tournaments.filter((tournament) => tournament.id !== id),
+          matches: prev.matches.filter((match) => match.tournamentId !== id),
+          events: prev.events.filter((event) => !matchIds.has(event.matchId)),
+        };
+      },
+      () => send<AppState>(`/api/tournaments/${id}`, {}, "DELETE"),
     );
   },
   publish: (input) =>
