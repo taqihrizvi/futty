@@ -2,9 +2,10 @@
 
 import { createContext, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from "react";
 import { Loader } from "@/components/loader";
-import { elapsedSeconds } from "./format";
+import { elapsedSeconds, HALF_LIMIT_SECONDS } from "./format";
+import { teamKey } from "./publish";
 import { uid } from "./ids";
-import type { AppState, CardColor, MatchEvent, NewTournamentInput, Player, TournamentDetails } from "./types";
+import type { AppState, CardColor, Match, MatchEvent, NewTournamentInput, Player, TournamentDetails } from "./types";
 
 type Snapshot = {
   state: AppState;
@@ -26,6 +27,8 @@ type StoreApi = {
   addSub: (matchId: string, teamId: string, playerOffId: string, playerOnId: string) => void;
   undoLast: (matchId: string) => void;
   startMatch: (matchId: string) => void;
+  pauseMatch: (matchId: string) => void;
+  resumeMatch: (matchId: string) => void;
   endHalf: (matchId: string) => void;
   startSecondHalf: (matchId: string) => void;
   endMatch: (matchId: string) => void;
@@ -34,6 +37,14 @@ type StoreApi = {
   addPlayer: (player: Omit<Player, "id">) => void;
   updatePlayer: (id: string, patch: Partial<Omit<Player, "id">>) => void;
   removePlayer: (id: string) => void;
+  addTeam: (team: { name: string; city: string }) => void;
+  addTeamToTournament: (input: {
+    tournamentId: string;
+    teamId?: string;
+    name?: string;
+    city?: string;
+    groupId?: string;
+  }) => void;
   removeTeam: (id: string) => void;
   removeTournament: (id: string) => void;
   updateTournament: (id: string, details: TournamentDetails) => void;
@@ -97,6 +108,75 @@ async function send<T>(url: string, body: unknown, method = "POST") {
   const data = (await response.json()) as T & { error?: string };
   if (!response.ok) throw new Error(data.error ?? "Save failed");
   return data;
+}
+
+function attachTeam(
+  prev: AppState,
+  input: { tournamentId: string; teamId?: string; id?: string; name?: string; city?: string; groupId?: string },
+): AppState {
+  const tournament = prev.tournaments.find((item) => item.id === input.tournamentId);
+  if (!tournament) return prev;
+  const name = input.name?.trim().replace(/\s+/g, " ") ?? "";
+  let team = input.teamId
+    ? prev.teams.find((item) => item.id === input.teamId)
+    : prev.teams.find((item) => name && teamKey(item.name) === teamKey(name));
+  let teams = prev.teams;
+  if (!team && name && input.id) {
+    team = { id: input.id, name, city: input.city?.trim() ?? "" };
+    teams = [...teams, team];
+  }
+  if (!team || tournament.teamIds.includes(team.id)) return { ...prev, teams };
+  const chosen = team;
+  const group =
+    tournament.groups.find((item) => item.id === input.groupId) ??
+    [...tournament.groups].sort((left, right) => left.teamIds.length - right.teamIds.length)[0];
+  const groups = group
+    ? tournament.groups.map((item) =>
+        item.id === group.id ? { ...item, teamIds: [...item.teamIds, chosen.id] } : item,
+      )
+    : tournament.groups;
+  const opponents = (groups.find((item) => item.id === group?.id)?.teamIds ?? []).filter((id) => id !== chosen.id);
+  const taken = new Set(
+    prev.matches
+      .filter((match) => match.tournamentId === tournament.id)
+      .flatMap((match) => {
+        const pair = [match.homeTeamId, match.awayTeamId].filter(Boolean).sort().join(":");
+        return pair ? [pair] : [];
+      }),
+  );
+  const extras: Match[] = [];
+  opponents.forEach((opponentId, index) => {
+    const pair = [chosen.id, opponentId].sort().join(":");
+    if (taken.has(pair)) return;
+    const minutes = 18 * 60 + index * 45;
+    extras.push({
+      id: uid("m"),
+      tournamentId: tournament.id,
+      stage: "group",
+      groupId: group?.id,
+      homeTeamId: chosen.id,
+      awayTeamId: opponentId,
+      homeScore: 0,
+      awayScore: 0,
+      status: "scheduled",
+      dayOffset: 0,
+      time: `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`,
+      venue: tournament.venue || "Main pitch",
+      clockSeconds: 0,
+      clockRunning: false,
+      clockAnchor: null,
+      period: 1,
+      onBreak: false,
+    });
+  });
+  return {
+    ...prev,
+    teams,
+    matches: [...prev.matches, ...extras],
+    tournaments: prev.tournaments.map((item) =>
+      item.id === tournament.id ? { ...item, teamIds: [...item.teamIds, chosen.id], groups } : item,
+    ),
+  };
 }
 
 function save(recipe: (prev: AppState) => AppState, request: () => Promise<AppState>) {
@@ -233,6 +313,47 @@ const actions: Omit<StoreApi, "state"> = {
       () => send<AppState>(`/api/matches/${matchId}`, { action: "start" }),
     );
   },
+  pauseMatch: (matchId) => {
+    void save(
+      (prev) => ({
+        ...prev,
+        matches: prev.matches.map((match) => {
+          if (match.id !== matchId || match.status !== "live" || !match.clockRunning) return match;
+          return {
+            ...match,
+            clockRunning: false,
+            clockAnchor: null,
+            clockSeconds: elapsedSeconds(match, Date.now()),
+          };
+        }),
+      }),
+      () => send<AppState>(`/api/matches/${matchId}`, { action: "stop" }),
+    );
+  },
+  resumeMatch: (matchId) => {
+    void save(
+      (prev) => ({
+        ...prev,
+        matches: prev.matches.map((match) => {
+          if (
+            match.id !== matchId ||
+            match.status !== "live" ||
+            match.clockRunning ||
+            match.onBreak ||
+            match.clockSeconds >= HALF_LIMIT_SECONDS
+          ) {
+            return match;
+          }
+          return {
+            ...match,
+            clockRunning: true,
+            clockAnchor: new Date().toISOString(),
+          };
+        }),
+      }),
+      () => send<AppState>(`/api/matches/${matchId}`, { action: "resume" }),
+    );
+  },
   endHalf: (matchId) => {
     void save(
       (prev) => ({
@@ -333,6 +454,26 @@ const actions: Omit<StoreApi, "state"> = {
         players: prev.players.filter((player) => player.id !== id),
       }),
       () => send<AppState>(`/api/players/${id}`, {}, "DELETE"),
+    );
+  },
+  addTeam: (team) => {
+    const name = team.name.trim().replace(/\s+/g, " ");
+    const city = team.city.trim();
+    const id = uid("t");
+    if (!name) return;
+    void save(
+      (prev) => {
+        if (prev.teams.some((item) => teamKey(item.name) === teamKey(name))) return prev;
+        return { ...prev, teams: [...prev.teams, { id, name, city }] };
+      },
+      () => send<AppState>("/api/teams", { id, name, city }),
+    );
+  },
+  addTeamToTournament: (input) => {
+    const createdId = input.teamId ? undefined : uid("t");
+    void save(
+      (prev) => attachTeam(prev, { ...input, id: createdId }),
+      () => send<AppState>(`/api/tournaments/${input.tournamentId}/teams`, { ...input, id: createdId }),
     );
   },
   removeTeam: (id) => {

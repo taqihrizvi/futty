@@ -9,12 +9,23 @@ import { useApp } from "@/lib/store";
 import type { Team } from "@/lib/types";
 
 export function TeamsScreen() {
-  const { state, removeTeam } = useApp();
+  const { state, addTeam, removeTeam } = useApp();
   const [pending, setPending] = useState<Team | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [name, setName] = useState("");
+  const [city, setCity] = useState("");
+  const [error, setError] = useState("");
 
   return (
     <div>
-      <PageHeader title="Teams" detail="Open a squad to add or edit players." />
+      <PageHeader title="Teams" detail="Add a squad here, then open it to add players." />
+      <button
+        type="button"
+        onClick={() => setAdding(true)}
+        className="mb-4 min-h-12 rounded-xl bg-primary px-4 text-label-md font-semibold text-on-primary"
+      >
+        Add team
+      </button>
       <div className="grid gap-3 sm:grid-cols-2">
         {state.teams.map((team) => {
           const count = state.players.filter((player) => player.teamId === team.id).length;
@@ -45,6 +56,55 @@ export function TeamsScreen() {
           );
         })}
       </div>
+      {adding ? (
+        <BottomSheet
+          title="Add team"
+          onClose={() => {
+            setAdding(false);
+            setError("");
+          }}
+        >
+          <form
+            className="grid gap-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (!name.trim()) {
+                setError("Add a team name.");
+                return;
+              }
+              addTeam({ name, city });
+              setName("");
+              setCity("");
+              setError("");
+              setAdding(false);
+            }}
+          >
+            <label className="grid gap-1 text-base font-semibold">
+              Name
+              <input
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                className="min-h-12 rounded-2xl bg-pitch-2 px-4 text-base font-normal"
+              />
+            </label>
+            <label className="grid gap-1 text-base font-semibold">
+              City
+              <input
+                value={city}
+                onChange={(event) => setCity(event.target.value)}
+                className="min-h-12 rounded-2xl bg-pitch-2 px-4 text-base font-normal"
+              />
+            </label>
+            {error ? <p className="text-base font-semibold text-error">{error}</p> : null}
+            <button
+              type="submit"
+              className="min-h-14 rounded-2xl bg-primary px-4 text-lg font-semibold text-on-primary"
+            >
+              Add team
+            </button>
+          </form>
+        </BottomSheet>
+      ) : null}
       {pending ? (
         <BottomSheet title="Delete team" onClose={() => setPending(null)}>
           <p className="text-base text-on-surface-variant">

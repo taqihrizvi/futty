@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/ui";
+import { teamKey } from "@/lib/publish";
 import { useApp } from "@/lib/store";
-import type { Format, RoundId } from "@/lib/types";
+import type { Format, RoundId, Team } from "@/lib/types";
 
 const STEPS = [
   "Tournament",
@@ -45,7 +46,7 @@ function plusDays(date: string, days: number) {
 }
 
 export function WizardScreen() {
-  const { publish } = useApp();
+  const { publish, state } = useApp();
   const router = useRouter();
   const initialDate = useMemo(() => todayInput(), []);
   const [step, setStep] = useState(0);
@@ -85,16 +86,28 @@ export function WizardScreen() {
   }
 
   function addTeam() {
-    if (!teamName.trim()) {
+    const name = teamName.trim().replace(/\s+/g, " ");
+    if (!name) {
       setError("Enter a team name.");
       return;
     }
-    setTeams((current) => [
-      ...current,
-      { name: teamName.trim(), city: teamCity.trim() || city.trim() },
-    ]);
+    if (teams.some((item) => teamKey(item.name) === teamKey(name))) {
+      setError("That team is already in this tournament.");
+      return;
+    }
+    setTeams((current) => [...current, { name, city: teamCity.trim() || city.trim() }]);
     setTeamName("");
     setTeamCity("");
+    setError("");
+  }
+
+  function selectExisting(team: Team) {
+    setTeams((current) => {
+      if (current.some((item) => teamKey(item.name) === teamKey(team.name))) {
+        return current.filter((item) => teamKey(item.name) !== teamKey(team.name));
+      }
+      return [...current, { name: team.name, city: team.city }];
+    });
     setError("");
   }
 
@@ -171,6 +184,31 @@ export function WizardScreen() {
 
       {step === 1 ? (
         <div className="grid gap-3">
+          {state.teams.length > 0 ? (
+            <div className="grid gap-2">
+              <p className="text-base font-semibold">Existing teams</p>
+              {state.teams.map((team) => {
+                const selected = teams.some((item) => teamKey(item.name) === teamKey(team.name));
+                return (
+                  <button
+                    key={team.id}
+                    type="button"
+                    aria-pressed={selected}
+                    onClick={() => selectExisting(team)}
+                    className={
+                      selected
+                        ? "min-h-14 rounded-2xl bg-accent px-4 text-left text-lg font-semibold text-accent-ink"
+                        : "min-h-14 rounded-2xl bg-pitch-2 px-4 text-left text-lg font-semibold"
+                    }
+                  >
+                    {team.name}
+                    {team.city ? <span className="block text-sm font-normal opacity-80">{team.city}</span> : null}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+          <p className="text-base font-semibold">New team</p>
           <Field label="Team name" value={teamName} onChange={setTeamName} />
           <Field label="Team city" value={teamCity} onChange={setTeamCity} />
           <button

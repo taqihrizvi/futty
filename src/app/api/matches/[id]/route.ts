@@ -1,7 +1,17 @@
 import { NextResponse } from "next/server";
 import type { MatchEvent } from "@/lib/types";
 import { beginRequest, jsonError } from "@/server/http";
-import { addMatchEvent, armClock, endHalf, endMatch, startMatch, startSecondHalf, undoMatchEvent } from "@/server/repository";
+import {
+  addMatchEvent,
+  armClock,
+  endHalf,
+  endMatch,
+  pauseMatch,
+  resumeMatch,
+  startMatch,
+  startSecondHalf,
+  undoMatchEvent,
+} from "@/server/repository";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -9,6 +19,8 @@ type Body =
   | { action: "event"; event: MatchEvent }
   | { action: "undo" }
   | { action: "start" }
+  | { action: "stop" }
+  | { action: "resume" }
   | { action: "end" }
   | { action: "end-half" }
   | { action: "second-half" }
@@ -24,6 +36,8 @@ export async function POST(request: Request, context: Context) {
     }
     if (body.action === "undo") return NextResponse.json(await undoMatchEvent(id));
     if (body.action === "start") return NextResponse.json(await startMatch(id));
+    if (body.action === "stop") return NextResponse.json(await pauseMatch(id));
+    if (body.action === "resume") return NextResponse.json(await resumeMatch(id));
     if (body.action === "end") return NextResponse.json(await endMatch(id));
     if (body.action === "end-half") return NextResponse.json(await endHalf(id));
     if (body.action === "second-half") return NextResponse.json(await startSecondHalf(id));

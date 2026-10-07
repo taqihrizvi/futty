@@ -5,6 +5,7 @@ import { publishTournament, teamKey } from "@/lib/publish";
 import { createSeed } from "@/lib/seed";
 import type { AppState, Format, Match, MatchEvent, NewTournamentInput, Player, TournamentDetails } from "@/lib/types";
 import { HALF_LIMIT_SECONDS } from "@/lib/format";
+import { uid } from "@/lib/ids";
 import { getPool } from "./db";
 import { seedOrganizer } from "./users";
 
@@ -314,6 +315,143 @@ export async function publishNewTournament(input: NewTournamentInput) {
   return { slug: published.slug, state: await loadState() };
 }
 
+export async function addTeam(input: { id?: string; name: string; city?: string }) {
+  await ensureReady();
+  const name = input.name.trim().replace(/\s+/g, " ");
+  if (!name) throw new Error("Add a team name");
+  const city = input.city?.trim() ?? "";
+  const existing = await findTeamByName(name);
+  if (existing) return loadState();
+  await getPool().query("INSERT INTO teams (id, name, city) VALUES ($1, $2, $3)", [
+    input.id || uid("t"),
+    name,
+    city,
+  ]);
+  return loadState();
+}
+
+export async function addTeamToTournament(
+  tournamentId: string,
+  input: { teamId?: string; id?: string; name?: string; city?: string; groupId?: string },
+) {
+  await ensureReady();
+  const client = await getPool().connect();
+  try {
+    await client.query("BEGIN");
+    const tournament = await client.query<{ venue: string }>(
+      "SELECT venue FROM tournaments WHERE id = $1",
+      [tournamentId],
+    );
+    if (!tournament.rows[0]) throw new Error("Tournament not found");
+
+    let teamId = input.teamId;
+    if (!teamId) {
+      const name = input.name?.trim().replace(/\s+/g, " ") ?? "";
+      if (!name) throw new Error("Choose a team or add a name");
+      const existing = await findTeamByName(name, client);
+      if (existing) {
+        teamId = existing;
+      } else {
+        teamId = input.id || uid("t");
+        await client.query("INSERT INTO teams (id, name, city) VALUES ($1, $2, $3)", [
+          teamId,
+          name,
+          input.city?.trim() ?? "",
+        ]);
+      }
+    }
+
+    const already = await client.query(
+      "SELECT 1 FROM tournament_teams WHERE tournament_id = $1 AND team_id = $2",
+      [tournamentId, teamId],
+    );
+    if ((already.rowCount ?? 0) > 0) {
+      await client.query("COMMIT");
+      return loadState();
+    }
+
+    let groupId = input.groupId;
+    if (!groupId) {
+      const groups = await client.query<{ id: string; size: number }>(
+        `SELECT groups.id, COUNT(group_teams.team_id)::int AS size
+         FROM groups
+         LEFT JOIN group_teams ON group_teams.group_id = groups.id
+         WHERE groups.tournament_id = $1
+         GROUP BY groups.id
+         ORDER BY size, groups.name
+         LIMIT 1`,
+        [tournamentId],
+      );
+      groupId = groups.rows[0]?.id;
+    }
+    if (!groupId) {
+      groupId = uid("g");
+      await client.query("INSERT INTO groups (id, tournament_id, name) VALUES ($1, $2, 'Group A')", [
+        groupId,
+        tournamentId,
+      ]);
+    }
+
+    await client.query(
+      "INSERT INTO tournament_teams (tournament_id, team_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+      [tournamentId, teamId],
+    );
+    await client.query(
+      "INSERT INTO group_teams (group_id, team_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+      [groupId, teamId],
+    );
+
+    const opponents = await client.query<{ team_id: string }>(
+      "SELECT team_id FROM group_teams WHERE group_id = $1 AND team_id <> $2",
+      [groupId, teamId],
+    );
+    const venue = tournament.rows[0].venue || "Main pitch";
+    let slot = 0;
+    for (const opponent of opponents.rows) {
+      const played = await client.query(
+        `SELECT 1 FROM matches
+         WHERE tournament_id = $1
+           AND (
+             (home_team_id = $2 AND away_team_id = $3)
+             OR (home_team_id = $3 AND away_team_id = $2)
+           )
+         LIMIT 1`,
+        [tournamentId, teamId, opponent.team_id],
+      );
+      if ((played.rowCount ?? 0) > 0) continue;
+      const minutes = 18 * 60 + slot * 45;
+      slot += 1;
+      const kickoff = kickoffDate(0, `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`);
+      await client.query(
+        `INSERT INTO matches (
+          id, tournament_id, stage, group_id, home_team_id, away_team_id,
+          home_score, away_score, status, kickoff_at, venue,
+          clock_seconds, clock_running, period, on_break
+        ) VALUES (
+          $1, $2, 'group', $3, $4, $5,
+          0, 0, 'scheduled', $6, $7,
+          0, false, 1, false
+        )`,
+        [uid("m"), tournamentId, groupId, teamId, opponent.team_id, kickoff, venue],
+      );
+    }
+
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+  return loadState();
+}
+
+async function findTeamByName(name: string, client?: PoolClient) {
+  const db = client ?? getPool();
+  const result = await db.query<{ id: string; name: string }>("SELECT id, name FROM teams");
+  return result.rows.find((team) => teamKey(team.name) === teamKey(name))?.id;
+}
+
 export async function addPlayer(player: Player) {
   await ensureReady();
   await getPool().query(
@@ -509,6 +647,30 @@ export async function startMatch(matchId: string) {
          clock_anchor = now()
      WHERE id = $1`,
     [matchId],
+  );
+  return loadState();
+}
+
+export async function pauseMatch(matchId: string) {
+  await ensureReady();
+  const match = await getMatch(matchId);
+  if (!match || match.status !== "live" || !match.clock_running) throw new Error("Match clock is not running");
+  const seconds = Math.min(HALF_LIMIT_SECONDS, elapsed(match));
+  await getPool().query(
+    "UPDATE matches SET clock_running = false, clock_anchor = NULL, clock_seconds = $2 WHERE id = $1",
+    [matchId, seconds],
+  );
+  return loadState();
+}
+
+export async function resumeMatch(matchId: string) {
+  await ensureReady();
+  await getPool().query(
+    `UPDATE matches
+     SET clock_running = true, clock_anchor = now()
+     WHERE id = $1 AND status = 'live' AND clock_running = false AND on_break = false
+       AND clock_seconds < $2`,
+    [matchId, HALF_LIMIT_SECONDS],
   );
   return loadState();
 }

@@ -122,13 +122,16 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
               <div className="mb-1 flex items-center gap-2">
                 {match.clockRunning ? <span className="h-2.5 w-2.5 animate-ping rounded-full bg-primary-fixed" /> : null}
                 <span className="text-label-md font-bold tracking-widest text-surface-bright uppercase">
-                  {match.status === "finished" || (match.period === 2 && !match.clockRunning && !match.onBreak && played > 0)
+                  {match.status === "finished" ||
+                  (match.period === 2 && !match.clockRunning && !match.onBreak && played >= HALF_LIMIT_SECONDS)
                     ? "Full time"
                     : match.onBreak
                       ? "Half time"
-                      : match.status === "live"
-                        ? `${match.period === 2 ? "2nd" : "1st"} half${played > REGULATION_SECONDS ? " · added time" : ""}`
-                        : "Scheduled"}
+                      : match.status === "live" && !match.clockRunning
+                        ? `${match.period === 2 ? "2nd" : "1st"} half · stopped`
+                        : match.status === "live"
+                          ? `${match.period === 2 ? "2nd" : "1st"} half${played > REGULATION_SECONDS ? " · added time" : ""}`
+                          : "Scheduled"}
                 </span>
               </div>
               <div className={`text-inverse-on-surface ${played > REGULATION_SECONDS ? "text-headline-xl" : "text-display-hero"}`}>{clock}</div>
@@ -143,6 +146,26 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                   >
                     <Icon name="play_arrow" className="text-[18px]" />
                     Start
+                  </button>
+                ) : null}
+                {match.status === "live" && match.clockRunning ? (
+                  <button
+                    type="button"
+                    onClick={() => app.pauseMatch(match.id)}
+                    className="flex items-center gap-1 rounded-lg bg-surface-container-highest px-3 py-1.5 text-label-md text-on-surface"
+                  >
+                    <Icon name="pause" className="text-[18px]" />
+                    Stop
+                  </button>
+                ) : null}
+                {match.status === "live" && !match.clockRunning && !match.onBreak && played < HALF_LIMIT_SECONDS ? (
+                  <button
+                    type="button"
+                    onClick={() => app.resumeMatch(match.id)}
+                    className="flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-label-md text-on-primary"
+                  >
+                    <Icon name="play_arrow" className="text-[18px]" />
+                    Resume
                   </button>
                 ) : null}
                 {match.status === "live" && match.onBreak ? (

@@ -19,15 +19,18 @@ import {
   tournamentPhase,
 } from "@/lib/derive";
 import { formatLabel } from "@/lib/format";
+import { teamKey } from "@/lib/publish";
 import { useApp } from "@/lib/store";
+import type { Group, Team } from "@/lib/types";
 import { TournamentEditor } from "@/components/tournament-editor";
 
 export function TournamentScreen({ slug }: { slug: string }) {
-  const { state, removeTournament } = useApp();
+  const { state, addTeamToTournament, removeTournament } = useApp();
   const router = useRouter();
   const tournament = tournamentBySlug(state, slug);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [addingTeam, setAddingTeam] = useState(false);
 
   if (!tournament) {
     return (
@@ -195,7 +198,12 @@ export function TournamentScreen({ slug }: { slug: string }) {
 
       <Deferred>
         <section className="mt-8">
-          <SectionHeading title="Teams" href="/teams" action="Manage" />
+          <div className="mb-3 flex items-end justify-between gap-3">
+            <h2 className="text-headline-md text-on-surface">Teams</h2>
+            <button type="button" onClick={() => setAddingTeam(true)} className="text-label-md text-primary">
+              Add team
+            </button>
+          </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {tournament.teamIds.map((teamId) => {
               const team = state.teams.find((item) => item.id === teamId);
@@ -235,6 +243,19 @@ export function TournamentScreen({ slug }: { slug: string }) {
       >
         Delete tournament
       </button>
+      {addingTeam ? (
+        <AddTournamentTeam
+          tournamentId={tournament.id}
+          groupIds={tournament.groups}
+          taken={new Set(tournament.teamIds)}
+          teams={state.teams}
+          onAdd={(input) => {
+            addTeamToTournament({ tournamentId: tournament.id, ...input });
+            setAddingTeam(false);
+          }}
+          onClose={() => setAddingTeam(false)}
+        />
+      ) : null}
       {confirmDelete ? (
         <BottomSheet title="Delete tournament" onClose={() => setConfirmDelete(false)}>
           <p className="text-base text-on-surface-variant">
@@ -254,5 +275,124 @@ export function TournamentScreen({ slug }: { slug: string }) {
       ) : null}
       {editing ? <TournamentEditor tournament={tournament} onClose={() => setEditing(false)} /> : null}
     </div>
+  );
+}
+
+function AddTournamentTeam({
+  groupIds,
+  taken,
+  teams,
+  onAdd,
+  onClose,
+}: {
+  tournamentId: string;
+  groupIds: Group[];
+  taken: Set<string>;
+  teams: Team[];
+  onAdd: (input: { teamId?: string; name?: string; city?: string; groupId?: string }) => void;
+  onClose: () => void;
+}) {
+  const available = teams.filter((team) => !taken.has(team.id));
+  const [teamId, setTeamId] = useState("");
+  const [name, setName] = useState("");
+  const [city, setCity] = useState("");
+  const [groupId, setGroupId] = useState(groupIds[0]?.id ?? "");
+  const [error, setError] = useState("");
+
+  return (
+    <BottomSheet title="Add team" onClose={onClose}>
+      <form
+        className="grid max-h-[70vh] gap-3 overflow-y-auto"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const group = groupId || undefined;
+          if (teamId) {
+            onAdd({ teamId, groupId: group });
+            return;
+          }
+          const nextName = name.trim().replace(/\s+/g, " ");
+          if (!nextName) {
+            setError("Choose a team or enter a name.");
+            return;
+          }
+          if (teams.some((team) => taken.has(team.id) && teamKey(team.name) === teamKey(nextName))) {
+            setError("That team is already in this tournament.");
+            return;
+          }
+          onAdd({ name: nextName, city: city.trim(), groupId: group });
+        }}
+      >
+        {available.length > 0 ? (
+          <div className="grid gap-2">
+            <p className="text-base font-semibold">Existing teams</p>
+            {available.map((team) => (
+              <button
+                key={team.id}
+                type="button"
+                aria-pressed={teamId === team.id}
+                onClick={() => {
+                  setTeamId((current) => (current === team.id ? "" : team.id));
+                  setName("");
+                  setError("");
+                }}
+                className={
+                  teamId === team.id
+                    ? "min-h-14 rounded-2xl bg-accent px-4 text-left text-lg font-semibold text-accent-ink"
+                    : "min-h-14 rounded-2xl bg-pitch-2 px-4 text-left text-lg font-semibold"
+                }
+              >
+                {team.name}
+                {team.city ? <span className="block text-sm font-normal opacity-80">{team.city}</span> : null}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        <p className="text-base font-semibold">New team</p>
+        <label className="grid gap-1 text-base font-semibold">
+          Name
+          <input
+            value={name}
+            onChange={(event) => {
+              setName(event.target.value);
+              setTeamId("");
+            }}
+            className="min-h-12 rounded-2xl bg-pitch-2 px-4 text-base font-normal"
+          />
+        </label>
+        <label className="grid gap-1 text-base font-semibold">
+          City
+          <input
+            value={city}
+            onChange={(event) => setCity(event.target.value)}
+            className="min-h-12 rounded-2xl bg-pitch-2 px-4 text-base font-normal"
+          />
+        </label>
+        {groupIds.length > 1 ? (
+          <div className="grid gap-2">
+            <p className="text-base font-semibold">Group</p>
+            <div className="grid grid-cols-2 gap-2">
+              {groupIds.map((group) => (
+                <button
+                  key={group.id}
+                  type="button"
+                  onClick={() => setGroupId(group.id)}
+                  className={
+                    groupId === group.id
+                      ? "min-h-12 rounded-2xl bg-accent px-3 text-base font-semibold text-accent-ink"
+                      : "min-h-12 rounded-2xl bg-pitch-2 px-3 text-base font-semibold"
+                  }
+                >
+                  {group.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        {error ? <p className="text-base font-semibold text-error">{error}</p> : null}
+        <button type="submit" className="min-h-14 rounded-2xl bg-primary px-4 text-lg font-semibold text-on-primary">
+          Add team
+        </button>
+      </form>
+    </BottomSheet>
   );
 }
