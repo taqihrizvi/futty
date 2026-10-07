@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { PoolClient } from "pg";
-import { publishTournament } from "@/lib/publish";
+import { publishTournament, teamKey } from "@/lib/publish";
 import { createSeed } from "@/lib/seed";
 import type { AppState, Format, Match, MatchEvent, NewTournamentInput, Player, TournamentDetails } from "@/lib/types";
 import { HALF_LIMIT_SECONDS } from "@/lib/format";
@@ -26,12 +26,90 @@ async function prepare() {
   const sql = readFileSync(schemaPath, "utf8");
   await getPool().query(sql);
   await seedOrganizer();
-  const count = await getPool().query<{ count: string }>(
-    "SELECT COUNT(*)::text AS count FROM tournaments",
-  );
-  if (count.rows[0]?.count === "0") {
-    await replaceState(createSeed());
+  await dedupeTeams();
+}
+
+async function dedupeTeams() {
+  const client = await getPool().connect();
+  try {
+    await client.query("BEGIN");
+    const teams = await client.query<{ id: string; name: string; players: number; links: number }>(
+      `SELECT t.id,
+              t.name,
+              (SELECT COUNT(*) FROM players p WHERE p.team_id = t.id)::int AS players,
+              (
+                (SELECT COUNT(*) FROM matches m WHERE m.home_team_id = t.id OR m.away_team_id = t.id)
+                + (SELECT COUNT(*) FROM tournament_teams tt WHERE tt.team_id = t.id)
+              )::int AS links
+       FROM teams t`,
+    );
+    const groups = new Map<string, { id: string; players: number; links: number }[]>();
+    for (const team of teams.rows) {
+      const key = teamKey(team.name);
+      const list = groups.get(key) ?? [];
+      list.push(team);
+      groups.set(key, list);
+    }
+    for (const list of groups.values()) {
+      if (list.length < 2) continue;
+      list.sort((a, b) => b.players - a.players || b.links - a.links || a.id.localeCompare(b.id));
+      const keeper = list[0].id;
+      for (const duplicate of list.slice(1)) {
+        await mergeTeam(client, keeper, duplicate.id);
+      }
+    }
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
   }
+}
+
+async function mergeTeam(client: PoolClient, keeper: string, duplicate: string) {
+  await client.query("UPDATE matches SET home_team_id = $1 WHERE home_team_id = $2", [keeper, duplicate]);
+  await client.query("UPDATE matches SET away_team_id = $1 WHERE away_team_id = $2", [keeper, duplicate]);
+  await client.query("UPDATE match_events SET team_id = $1 WHERE team_id = $2", [keeper, duplicate]);
+
+  const players = await client.query<{ id: string; name: string; shirt_number: number }>(
+    "SELECT id, name, shirt_number FROM players WHERE team_id = $1",
+    [duplicate],
+  );
+  for (const player of players.rows) {
+    const existing = await client.query<{ id: string }>(
+      `SELECT id FROM players
+       WHERE team_id = $1 AND lower(name) = lower($2) AND shirt_number = $3
+       LIMIT 1`,
+      [keeper, player.name, player.shirt_number],
+    );
+    const keeperPlayer = existing.rows[0]?.id;
+    if (keeperPlayer) {
+      await client.query("UPDATE match_events SET player_id = $1 WHERE player_id = $2", [keeperPlayer, player.id]);
+      await client.query(
+        "UPDATE match_events SET related_player_id = $1 WHERE related_player_id = $2",
+        [keeperPlayer, player.id],
+      );
+      await client.query("DELETE FROM players WHERE id = $1", [player.id]);
+    } else {
+      await client.query("UPDATE players SET team_id = $1 WHERE id = $2", [keeper, player.id]);
+    }
+  }
+
+  await client.query(
+    `INSERT INTO tournament_teams (tournament_id, team_id)
+     SELECT tournament_id, $1 FROM tournament_teams WHERE team_id = $2
+     ON CONFLICT DO NOTHING`,
+    [keeper, duplicate],
+  );
+  await client.query(
+    `INSERT INTO group_teams (group_id, team_id)
+     SELECT group_id, $1 FROM group_teams WHERE team_id = $2
+     ON CONFLICT DO NOTHING`,
+    [keeper, duplicate],
+  );
+  await client.query("UPDATE settings SET value = $1 WHERE key = 'my_team_id' AND value = $2", [keeper, duplicate]);
+  await client.query("DELETE FROM teams WHERE id = $1", [duplicate]);
 }
 
 export async function loadState(): Promise<AppState> {

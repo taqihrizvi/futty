@@ -36,6 +36,10 @@ export function pairings(teamIds: string[]) {
   return pairs;
 }
 
+export function teamKey(name: string) {
+  return name.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
 export function publishTournament(state: AppState, input: NewTournamentInput) {
   const tournamentId = uid("tour");
   let slug = slugify(input.name);
@@ -43,11 +47,22 @@ export function publishTournament(state: AppState, input: NewTournamentInput) {
     slug = `${slug}-${uid("s").slice(-4)}`;
   }
 
-  const teams = input.teams.map((team) => ({
-    id: uid("t"),
-    name: team.name.trim(),
-    city: team.city.trim() || input.city.trim(),
-  }));
+  const teams: { id: string; name: string; city: string }[] = [];
+  const seen = new Set<string>();
+  for (const team of input.teams) {
+    const name = team.name.trim().replace(/\s+/g, " ");
+    const key = teamKey(name);
+    if (!name || seen.has(key)) continue;
+    seen.add(key);
+    const existing = state.teams.find((item) => teamKey(item.name) === key);
+    teams.push(
+      existing ?? {
+        id: uid("t"),
+        name,
+        city: team.city.trim() || input.city.trim(),
+      },
+    );
+  }
 
   const groupCount = Math.max(1, Math.min(input.groupCount, teams.length));
   const groups = Array.from({ length: groupCount }, (_, index) => ({
@@ -130,7 +145,10 @@ export function publishTournament(state: AppState, input: NewTournamentInput) {
 
   const next: AppState = {
     ...state,
-    teams: [...state.teams, ...teams],
+    teams: [
+      ...state.teams,
+      ...teams.filter((team) => !state.teams.some((item) => item.id === team.id)),
+    ],
     tournaments: [
       ...state.tournaments,
       {
