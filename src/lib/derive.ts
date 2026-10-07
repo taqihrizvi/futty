@@ -1,4 +1,5 @@
 import { kickoffSortKey } from "./format";
+import { placedSide } from "./knockout";
 import type {
   AppState,
   LeaderRow,
@@ -39,10 +40,13 @@ export function sideTeam(
   match: Match,
   side: "home" | "away",
 ) {
+  const placed = placedSide(state, match, side);
+  if (placed?.id) return placed;
   const direct = side === "home" ? match.homeTeamId : match.awayTeamId;
   if (direct) {
     return { id: direct, name: teamById(state, direct)?.name ?? "TBD" };
   }
+  if (placed) return placed;
   const fromId = side === "home" ? match.homeFromMatchId : match.awayFromMatchId;
   const label = side === "home" ? match.homeLabel : match.awayLabel;
   if (!fromId) return { id: null, name: label || "TBD" };

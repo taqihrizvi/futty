@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { PoolClient } from "pg";
+import { knockoutUpdates } from "@/lib/knockout";
 import { publishTournament, teamKey } from "@/lib/publish";
 import { createSeed } from "@/lib/seed";
 import type { AppState, Format, Match, MatchEvent, NewTournamentInput, Player, TournamentDetails } from "@/lib/types";
@@ -113,8 +114,7 @@ async function mergeTeam(client: PoolClient, keeper: string, duplicate: string) 
   await client.query("DELETE FROM teams WHERE id = $1", [duplicate]);
 }
 
-export async function loadState(): Promise<AppState> {
-  await ensureReady();
+async function readState(): Promise<AppState> {
   const db = getPool();
   const [teams, players, tournaments, tournamentTeams, groups, groupTeams, rounds, matches, events, settings] =
     await Promise.all([
@@ -252,6 +252,64 @@ export async function loadState(): Promise<AppState> {
       minute: event.minute,
     })),
     myTeamId: settings.rows[0]?.value ?? null,
+  };
+}
+
+export async function loadState(): Promise<AppState> {
+  await ensureReady();
+  return placeKnockoutTeams(await readState());
+}
+
+async function placeKnockoutTeams(state: AppState) {
+  const updates = knockoutUpdates(state);
+  if (updates.length === 0) return state;
+  const client = await getPool().connect();
+  try {
+    await client.query("BEGIN");
+    for (const update of updates) {
+      await client.query(
+        `UPDATE matches
+         SET home_team_id = COALESCE($2, home_team_id),
+             away_team_id = COALESCE($3, away_team_id),
+             home_label = CASE WHEN $4 = '' THEN home_label ELSE $4 END,
+             away_label = CASE WHEN $5 = '' THEN away_label ELSE $5 END,
+             home_from_match_id = CASE WHEN $6 THEN NULL ELSE home_from_match_id END,
+             away_from_match_id = CASE WHEN $6 THEN NULL ELSE away_from_match_id END
+         WHERE id = $1 AND status = 'scheduled'`,
+        [
+          update.matchId,
+          update.homeTeamId ?? null,
+          update.awayTeamId ?? null,
+          update.homeLabel,
+          update.awayLabel,
+          update.clearSource,
+        ],
+      );
+    }
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+
+  const byId = new Map(updates.map((update) => [update.matchId, update]));
+  return {
+    ...state,
+    matches: state.matches.map((match) => {
+      const update = byId.get(match.id);
+      if (!update) return match;
+      return {
+        ...match,
+        homeTeamId: update.homeTeamId ?? match.homeTeamId,
+        awayTeamId: update.awayTeamId ?? match.awayTeamId,
+        homeLabel: update.homeLabel || match.homeLabel,
+        awayLabel: update.awayLabel || match.awayLabel,
+        homeFromMatchId: update.clearSource ? undefined : match.homeFromMatchId,
+        awayFromMatchId: update.clearSource ? undefined : match.awayFromMatchId,
+      };
+    }),
   };
 }
 

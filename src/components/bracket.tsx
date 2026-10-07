@@ -4,12 +4,20 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { sideTeam, winnerId } from "@/lib/derive";
 import { roundLabel } from "@/lib/format";
+import { seededRoundId } from "@/lib/knockout";
 import { useApp } from "@/lib/store";
 import type { RoundId, Tournament } from "@/lib/types";
 
 export function Bracket({ tournament }: { tournament: Tournament }) {
   const { state } = useApp();
-  const rounds = tournament.knockoutRounds;
+  const seeded = seededRoundId(tournament);
+  const rounds = tournament.knockoutRounds.filter((item) => {
+    const ties = state.matches.filter((match) => match.tournamentId === tournament.id && match.round === item);
+    if (item === seeded) return ties.length > 0;
+    return ties.some(
+      (match) => match.homeTeamId || match.awayTeamId || match.homeFromMatchId || match.awayFromMatchId,
+    );
+  });
   const [index, setIndex] = useState(0);
   const startX = useRef(0);
   const round = rounds[index] ?? rounds[0];

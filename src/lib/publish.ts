@@ -1,12 +1,7 @@
 import { dayOffsetFromDate, kickoffSortKey } from "./format";
 import { slugify, uid } from "./ids";
+import { knockoutPairs, ROUND_SIZE, seededRoundId } from "./knockout";
 import type { AppState, Match, NewTournamentInput, RoundId } from "./types";
-
-const ROUND_SIZE: Record<RoundId, number> = {
-  "quarter-final": 4,
-  "semi-final": 2,
-  final: 1,
-};
 
 const ROUND_ORDER: RoundId[] = ["quarter-final", "semi-final", "final"];
 
@@ -106,18 +101,18 @@ export function publishTournament(state: AppState, input: NewTournamentInput) {
 
   const rounds = ROUND_ORDER.filter((round) => input.rounds.includes(round));
   const roundMatchIds = new Map<RoundId, string[]>();
+  const target = seededRoundId({ groups, qualifyPerGroup: input.qualifyPerGroup, knockoutRounds: rounds });
+  const pairs = target ? knockoutPairs(groups, input.qualifyPerGroup, target) : [];
 
   for (const round of rounds) {
     const ids: string[] = [];
+    const previous = previousRound(round, rounds);
+    const linkPrevious = Boolean(previous && target && rounds.indexOf(previous) >= rounds.indexOf(target));
     for (let index = 0; index < ROUND_SIZE[round]; index += 1) {
       const id = uid("m");
       ids.push(id);
       const kick = slotTime(baseOffset + 2, index);
-      const previous = previousRound(round, rounds);
-      const homeFrom = previous ? roundMatchIds.get(previous)?.[index * 2] : undefined;
-      const awayFrom = previous
-        ? roundMatchIds.get(previous)?.[index * 2 + 1]
-        : undefined;
+      const pair = round === target ? pairs[index] : undefined;
       matches.push({
         id,
         tournamentId,
@@ -125,8 +120,10 @@ export function publishTournament(state: AppState, input: NewTournamentInput) {
         round,
         homeTeamId: null,
         awayTeamId: null,
-        homeFromMatchId: homeFrom,
-        awayFromMatchId: awayFrom,
+        homeFromMatchId: linkPrevious ? roundMatchIds.get(previous!)?.[index * 2] : undefined,
+        awayFromMatchId: linkPrevious ? roundMatchIds.get(previous!)?.[index * 2 + 1] : undefined,
+        homeLabel: pair?.home.label,
+        awayLabel: pair?.away.label,
         homeScore: 0,
         awayScore: 0,
         status: "scheduled",
