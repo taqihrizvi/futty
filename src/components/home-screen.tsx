@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Icon, initials } from "@/components/icon";
+import { Chip } from "@/components/ui";
 import {
   groupStandings,
   leaderboard,
@@ -11,60 +12,86 @@ import {
   sortedMatches,
   teamById,
 } from "@/lib/derive";
-import { elapsedSeconds, formatGd, periodClock } from "@/lib/format";
+import { elapsedSeconds, formatGd, formatLabel, periodClock } from "@/lib/format";
+import { setCupId, useCupId } from "@/lib/cup";
 import { useNow } from "@/components/deferred";
 import { useApp } from "@/lib/store";
 import type { Match, MatchEvent } from "@/lib/types";
 
 export function HomeScreen() {
   const { state } = useApp();
-  const tournament = state.tournaments[0];
-  const today = sortedMatches(state.matches.filter((match) => match.dayOffset === 0));
-  const live = state.matches.filter((match) => match.status === "live");
+  const cupId = useCupId();
+  const tournament = state.tournaments.find((item) => item.id === cupId) ?? state.tournaments[0];
+  const cupMatches = tournament
+    ? state.matches.filter((match) => match.tournamentId === tournament.id)
+    : [];
+  const cupMatchIds = new Set(cupMatches.map((match) => match.id));
+  const today = sortedMatches(cupMatches.filter((match) => match.dayOffset === 0));
+  const live = cupMatches.filter((match) => match.status === "live");
   const scheduledToday = today.filter((match) => match.status === "scheduled").length;
-  const goals = state.events.filter((event) => event.kind === "goal").length;
-  const finished = state.matches.filter((match) => match.status === "finished").length;
+  const goals = state.events.filter((event) => event.kind === "goal" && cupMatchIds.has(event.matchId)).length;
+  const finished = cupMatches.filter((match) => match.status === "finished").length;
   const average = finished > 0 ? (goals / finished).toFixed(2) : "0.00";
+  const roster = tournament
+    ? state.players.filter((player) => tournament.teamIds.includes(player.teamId)).length
+    : 0;
   const hero = live[0] ?? null;
   const scorers = tournament ? leaderboard(state, tournament.id, "goals") : [];
   const assisters = tournament ? leaderboard(state, tournament.id, "assists") : [];
   const gloves = tournament ? leaderboard(state, tournament.id, "cleanSheets") : [];
-  const alerts = state.events.slice(-4).reverse();
+  const alerts = state.events.filter((event) => cupMatchIds.has(event.matchId)).slice(-4).reverse();
 
   return (
     <div>
-      <div className="mb-space-lg grid grid-cols-1 gap-space-md sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mb-4 rounded-xl bg-gradient-to-r from-primary via-primary-container to-secondary p-3 shadow-md">
+        <p className="mb-2 text-label-sm tracking-wider text-primary-fixed uppercase">Tournament</p>
+        {state.tournaments.length === 0 ? (
+          <p className="text-on-primary">No tournament yet.</p>
+        ) : (
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {state.tournaments.map((item) => (
+              <Chip
+                key={item.id}
+                active={item.id === tournament?.id}
+                tone="bg-white text-primary"
+                className="ring-2 ring-white/70"
+                onClick={() => setCupId(item.id)}
+              >
+                {item.name}
+              </Chip>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mb-space-lg grid grid-cols-2 gap-space-md xl:grid-cols-4">
         <Kpi
-          label="Active Tournaments"
-          value={String(state.tournaments.length)}
-          note={`${state.tournaments[0]?.name ?? "No cup"}`}
+          label="Teams"
+          value={String(tournament?.teamIds.length ?? 0)}
+          note={tournament ? `${formatLabel(tournament.format)} · ${tournament.city || "Cup"}` : "No cup"}
           icon="emoji_events"
-          iconClass="bg-surface-container-low text-primary"
-          noteClass="text-primary"
+          cardClass="bg-primary text-on-primary"
         />
         <Kpi
-          label="Matches Today"
+          label="Matches today"
           value={String(today.length)}
-          note={`${live.length} in progress, ${scheduledToday} next`}
+          note={`${live.length} live, ${scheduledToday} still to play`}
           icon="sports_soccer"
-          iconClass="bg-secondary-fixed text-on-secondary-fixed"
-          noteClass="text-secondary"
+          cardClass="bg-secondary text-on-secondary"
         />
         <Kpi
-          label="Total Goals Logged"
+          label="Goals"
           value={String(goals)}
-          note={`${average} G/Match Avg`}
+          note={`${average} per finished match`}
           icon="scoreboard"
-          iconClass="bg-surface-container-low text-primary-container"
-          noteClass="text-outline"
+          cardClass="bg-success text-on-primary"
         />
         <Kpi
-          label="Rostered Athletes"
-          value={String(state.players.length)}
-          note={`${state.teams.length} Teams Verified`}
+          label="Players"
+          value={String(roster)}
+          note={`${tournament?.teamIds.length ?? 0} squads in this cup`}
           icon="badge"
-          iconClass="bg-primary-fixed text-on-primary-fixed"
-          noteClass="text-on-primary-fixed-variant"
+          cardClass="bg-warning text-navy"
         />
       </div>
 
@@ -72,19 +99,19 @@ export function HomeScreen() {
 
       <div className="grid grid-cols-1 gap-space-lg lg:grid-cols-12">
         <div className="flex flex-col gap-space-lg lg:col-span-8">
-          <section className="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm">
-            <div className="mb-space-md flex flex-col justify-between gap-space-sm sm:flex-row sm:items-center">
+          <section className="overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm">
+            <div className="flex flex-col justify-between gap-space-sm bg-primary px-4 py-3 text-on-primary sm:flex-row sm:items-center">
               <div>
-                <span className="text-label-sm tracking-wider text-outline uppercase">
-                  Matchday Schedule
+                <span className="text-label-sm tracking-wider text-primary-fixed uppercase">
+                  {tournament?.name ?? "Matchday"}
                 </span>
-                <h2 className="text-headline-lg text-on-surface">Today&apos;s Fixtures</h2>
+                <h2 className="text-headline-lg">Today&apos;s Fixtures</h2>
               </div>
-              <Link href="/matches" className="text-label-md text-primary">
+              <Link href="/matches" className="text-label-md text-primary-fixed">
                 All matches
               </Link>
             </div>
-            <div className="flex flex-col gap-space-sm">
+            <div className="flex flex-col gap-space-sm p-3 sm:p-4">
               {today.length === 0 ? (
                 <p className="text-on-surface-variant">Nothing else is scheduled today.</p>
               ) : (
@@ -96,20 +123,20 @@ export function HomeScreen() {
           {tournament ? (
             <div className="grid grid-cols-1 gap-space-md md:grid-cols-2">
               {tournament.groups.slice(0, 2).map((group, index) => (
-                <section key={group.id} className="rounded-xl bg-surface-container-lowest p-space-md shadow-sm">
-                  <div className="mb-space-sm flex items-center justify-between">
+                <section key={group.id} className={`overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm ${index === 0 ? "ring-2 ring-secondary/40" : "ring-2 ring-primary/30"}`}>
+                  <div className={`mb-space-sm flex items-center justify-between px-3 py-2 text-on-primary ${index === 0 ? "bg-secondary" : "bg-primary"}`}>
                     <div className="flex items-center gap-2">
-                      <span className={`h-2.5 w-2.5 rounded-full ${index === 0 ? "bg-secondary" : "bg-primary"}`} />
-                      <h3 className="text-headline-md text-on-surface">{group.name} Leaders</h3>
+                      <span className="h-2.5 w-2.5 rounded-full bg-white" />
+                      <h3 className="text-headline-md">{group.name} Leaders</h3>
                     </div>
                     <Link
                       href={`/tournaments/${tournament.slug}`}
-                      className="flex items-center gap-0.5 text-label-sm font-semibold text-primary"
+                      className="flex items-center gap-0.5 text-label-sm font-semibold text-primary-fixed"
                     >
                       Full Table <Icon name="arrow_forward" className="text-[14px]" />
                     </Link>
                   </div>
-                  <div className="grid grid-cols-12 px-2 py-1.5 text-label-sm tracking-wider text-outline uppercase">
+                  <div className="grid grid-cols-12 px-3 py-1.5 text-label-sm tracking-wider text-outline uppercase">
                     <span className="col-span-6">Team</span>
                     <span className="col-span-2 text-center">P</span>
                     <span className="col-span-2 text-center">GD</span>
@@ -123,11 +150,11 @@ export function HomeScreen() {
                       return (
                         <div
                           key={row.teamId}
-                          className={`my-0.5 grid grid-cols-12 items-center rounded-lg px-2 py-2.5 text-body-sm ${lead ? "bg-surface-container-low" : ""}`}
+                          className={`mx-2 my-0.5 grid grid-cols-12 items-center rounded-lg px-2 py-2.5 text-body-sm ${lead ? "bg-secondary-fixed" : ""}`}
                         >
                           <div className="col-span-6 flex min-w-0 items-center gap-2">
                             <span
-                              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded text-label-sm font-bold ${lead ? "bg-secondary-fixed text-on-secondary-fixed" : "bg-surface-container-high text-on-surface-variant"}`}
+                              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded text-label-sm font-bold ${lead ? "bg-secondary text-on-secondary" : "bg-surface-container-high text-on-surface-variant"}`}
                             >
                               {row.rank}
                             </span>
@@ -146,6 +173,7 @@ export function HomeScreen() {
                         </div>
                       );
                     })}
+                  <div className="h-2" />
                 </section>
               ))}
             </div>
@@ -164,9 +192,9 @@ export function HomeScreen() {
               <Icon name="workspace_premium" className="text-[24px] text-secondary" />
             </div>
             <div className="flex flex-col gap-space-md">
-              <Performer label="Golden Boot" unit="Goals" tone="text-primary" row={scorers[0]} />
-              <Performer label="Playmaker" unit="Assists" tone="text-on-surface" row={assisters[0]} />
-              <Performer label="Golden Glove" unit="Clean Sheets" tone="text-secondary" row={gloves[0]} />
+              <Performer label="Golden Boot" unit="Goals" tone="text-primary" cardClass="bg-primary-fixed" row={scorers[0]} />
+              <Performer label="Playmaker" unit="Assists" tone="text-secondary" cardClass="bg-secondary-fixed" row={assisters[0]} />
+              <Performer label="Golden Glove" unit="Clean Sheets" tone="text-success" cardClass="bg-success/15" row={gloves[0]} />
             </div>
             <Link
               href="/stats"
@@ -206,25 +234,23 @@ function Kpi({
   value,
   note,
   icon,
-  iconClass,
-  noteClass,
+  cardClass,
 }: {
   label: string;
   value: string;
   note: string;
   icon: string;
-  iconClass: string;
-  noteClass: string;
+  cardClass: string;
 }) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-surface-container-lowest p-space-md shadow-sm">
+    <div className={`flex items-center justify-between gap-2 rounded-xl p-3 shadow-md sm:p-4 ${cardClass}`}>
       <div className="flex min-w-0 flex-col">
-        <span className="text-label-sm tracking-wider text-outline uppercase">{label}</span>
-        <span className="mt-1 text-headline-xl text-on-surface">{value}</span>
-        <span className={`mt-1 truncate text-label-sm ${noteClass}`}>{note}</span>
+        <span className="text-label-sm tracking-wider uppercase opacity-80">{label}</span>
+        <span className="mt-1 text-headline-lg sm:text-headline-xl">{value}</span>
+        <span className="mt-1 line-clamp-2 text-label-sm opacity-90">{note}</span>
       </div>
-      <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${iconClass}`}>
-        <Icon name={icon} className="text-[24px]" />
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20 sm:h-12 sm:w-12">
+        <Icon name={icon} className="text-[22px]" />
       </div>
     </div>
   );
@@ -311,7 +337,7 @@ function FixtureRow({ match }: { match: Match }) {
   return (
     <Link
       href={`/matches/${match.id}`}
-      className={`flex flex-col justify-between gap-space-md rounded-xl p-space-md sm:flex-row sm:items-center ${live ? "bg-surface-container-lowest shadow-sm" : "bg-surface-container-low"}`}
+      className={`flex flex-col justify-between gap-space-md rounded-xl border-l-4 p-space-md sm:flex-row sm:items-center ${live ? "border-error bg-error-container/40 shadow-sm" : finished ? "border-success bg-success/10" : "border-secondary bg-secondary-fixed/60"}`}
     >
       <div className="flex min-w-0 items-center gap-space-md">
         <div
@@ -339,7 +365,9 @@ function FixtureRow({ match }: { match: Match }) {
         </div>
       </div>
       <div className="flex shrink-0 items-center justify-between gap-space-sm sm:justify-end">
-        <span className="rounded-full bg-surface-container-high px-2.5 py-1 text-label-sm font-semibold text-on-surface-variant uppercase">
+        <span
+          className={`rounded-full px-2.5 py-1 text-label-sm font-semibold uppercase ${live ? "bg-error text-on-primary" : finished ? "bg-success text-on-primary" : "bg-secondary text-on-secondary"}`}
+        >
           {live ? "In play" : finished ? "Final Result" : "Scheduled"}
         </span>
         <Icon name="chevron_right" className="text-[18px] text-outline" />
@@ -352,16 +380,18 @@ function Performer({
   label,
   unit,
   tone,
+  cardClass,
   row,
 }: {
   label: string;
   unit: string;
   tone: string;
+  cardClass: string;
   row?: { playerId: string; name: string; teamName: string; value: number };
 }) {
   if (!row) return null;
   return (
-    <Link href={`/players/${row.playerId}`} className="flex items-center gap-space-md rounded-xl bg-surface-container-low p-space-md">
+    <Link href={`/players/${row.playerId}`} className={`flex items-center gap-space-md rounded-xl p-space-md ${cardClass}`}>
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-label-lg text-on-primary">
         {initials(row.name, 2)}
       </div>

@@ -29,11 +29,13 @@ export function Chip({
   children,
   onClick,
   className,
+  tone,
 }: {
   active?: boolean;
   children: React.ReactNode;
   onClick: () => void;
   className?: string;
+  tone?: string;
 }) {
   return (
     <button
@@ -44,8 +46,8 @@ export function Chip({
         "min-h-11 shrink-0 rounded-lg px-3 text-label-md",
         className,
         active
-          ? "bg-surface-container-lowest text-primary shadow-sm"
-          : "text-on-surface-variant hover:bg-surface-container-high",
+          ? "bg-primary text-on-primary shadow-sm"
+          : (tone ?? "bg-surface-container-low text-on-surface-variant"),
       )}
     >
       {children}

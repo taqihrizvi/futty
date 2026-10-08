@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icon } from "./icon";
 import { displayNameFromEmail } from "@/lib/display-name";
+import { setCupId, useCupId } from "@/lib/cup";
 import { signOut } from "@/lib/sign-out";
 import { useApp } from "@/lib/store";
 
@@ -41,8 +42,18 @@ export function AppNav() {
   const pathname = usePathname();
   const { state } = useApp();
   const liveCount = state.matches.filter((match) => match.status === "live").length;
-  const tournamentName = state.tournaments[0]?.name ?? "City Futsal Cup";
+  const cupId = useCupId();
+  const tournament = state.tournaments.find((item) => item.id === cupId) ?? state.tournaments[0];
+  const tournamentName = tournament?.name ?? "No cup";
+  const [cupOpen, setCupOpen] = useState(false);
   const [account, setAccount] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    if (!cupOpen) return;
+    const close = () => setCupOpen(false);
+    window.addEventListener("pointerdown", close);
+    return () => window.removeEventListener("pointerdown", close);
+  }, [cupOpen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,7 +77,7 @@ export function AppNav() {
 
   const linkClass = (href: string) =>
     active(pathname, href)
-      ? "flex items-center gap-3 rounded-lg bg-primary-container px-4 py-2.5 font-bold text-on-primary"
+      ? "flex items-center gap-3 rounded-lg bg-primary px-4 py-2.5 font-bold text-on-primary"
       : "flex items-center gap-3 rounded-lg px-4 py-2.5 text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface";
 
   return (
@@ -133,10 +144,49 @@ export function AppNav() {
             </span>
             <span className="truncate text-headline-md tracking-tight">Futty</span>
           </Link>
-          <div className="hidden items-center gap-1 rounded-lg bg-surface-container-low px-2 py-1.5 text-label-md text-on-surface sm:flex">
-            <Icon name="military_tech" className="text-[18px] text-primary" />
-            <span className="max-w-40 truncate font-semibold">{tournamentName}</span>
-            <Icon name="expand_more" className="text-[16px] text-outline" />
+          <div className="relative min-w-0" onPointerDown={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              aria-expanded={cupOpen}
+              aria-haspopup="listbox"
+              onClick={() => setCupOpen((open) => !open)}
+              className="flex max-w-36 items-center gap-1 rounded-lg bg-primary px-2 py-1.5 text-label-md text-on-primary sm:max-w-48"
+            >
+              <Icon name="military_tech" className="shrink-0 text-[18px]" />
+              <span className="truncate font-semibold">{tournamentName}</span>
+              <Icon name="expand_more" className="shrink-0 text-[16px]" />
+            </button>
+            {cupOpen ? (
+              <ul
+                role="listbox"
+                aria-label="Tournament"
+                className="absolute top-full left-0 z-50 mt-1 max-h-64 w-56 overflow-y-auto rounded-xl bg-surface-container-lowest p-1 shadow-lift"
+              >
+                {state.tournaments.length === 0 ? (
+                  <li className="px-3 py-2 text-body-sm text-on-surface-variant">No tournament yet.</li>
+                ) : (
+                  state.tournaments.map((item) => {
+                    const selected = item.id === tournament?.id;
+                    return (
+                      <li key={item.id}>
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={selected}
+                          onClick={() => {
+                            setCupId(item.id);
+                            setCupOpen(false);
+                          }}
+                          className={`flex min-h-11 w-full items-center rounded-lg px-3 text-left text-label-md ${selected ? "bg-primary text-on-primary" : "text-on-surface"}`}
+                        >
+                          {item.name}
+                        </button>
+                      </li>
+                    );
+                  })
+                )}
+              </ul>
+            ) : null}
           </div>
           <div className="relative hidden max-w-xl flex-1 md:block">
             <Icon name="search" className="absolute top-1/2 left-3 -translate-y-1/2 text-[18px] text-outline" />
@@ -177,7 +227,9 @@ export function AppNav() {
                   aria-current={on ? "page" : undefined}
                   className={`flex h-full min-w-0 flex-col items-center justify-center gap-1 px-1 ${on ? "text-primary" : "text-on-surface-variant"}`}
                 >
-                  <Icon name={item.icon} className="text-[22px]" />
+                  <span className={on ? "flex h-7 items-center rounded-full bg-primary px-2.5 text-on-primary" : "flex h-7 items-center px-2.5"}>
+                    <Icon name={item.icon} className="text-[22px]" />
+                  </span>
                   <span className="text-center text-[11px] leading-none font-semibold">{item.label}</span>
                 </Link>
               </li>

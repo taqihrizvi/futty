@@ -8,12 +8,12 @@ import { useApp } from "@/lib/store";
 import type { Match } from "@/lib/types";
 
 const FILTERS = [
-  { id: "today", label: "Today" },
-  { id: "upcoming", label: "Upcoming" },
-  { id: "completed", label: "Completed" },
-  { id: "my-team", label: "My team" },
-  { id: "group", label: "Group" },
-  { id: "knockout", label: "Knockout" },
+  { id: "today", label: "Today", tone: "bg-primary-fixed text-on-primary-fixed" },
+  { id: "upcoming", label: "Upcoming", tone: "bg-secondary-fixed text-on-secondary-fixed" },
+  { id: "completed", label: "Completed", tone: "bg-success/15 text-success" },
+  { id: "my-team", label: "My team", tone: "bg-warning/25 text-navy" },
+  { id: "group", label: "Group", tone: "bg-secondary-container/30 text-on-secondary-fixed" },
+  { id: "knockout", label: "Knockout", tone: "bg-error-container text-on-error-container" },
 ] as const;
 
 type FilterId = (typeof FILTERS)[number]["id"];
@@ -36,11 +36,12 @@ export function MatchesScreen() {
   return (
     <div>
       <PageHeader title="Matches" detail="Fixtures, live games, and results." />
-      <div className="mb-4 grid grid-cols-3 gap-1 rounded-xl bg-surface-container-low p-1">
+      <div className="mb-4 grid grid-cols-3 gap-1.5 rounded-xl bg-gradient-to-br from-primary-fixed via-white to-secondary-fixed p-1.5">
         {FILTERS.map((item) => (
           <Chip
             key={item.id}
             active={filter === item.id}
+            tone={item.tone}
             className="w-full shrink px-1"
             onClick={() => {
               setFilter(item.id);

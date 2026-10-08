@@ -7,14 +7,14 @@ import { leaderboard } from "@/lib/derive";
 import { useApp } from "@/lib/store";
 import type { Metric } from "@/lib/types";
 
-const METRICS: { id: Metric; label: string }[] = [
-  { id: "goals", label: "Goals" },
-  { id: "assists", label: "Assists" },
-  { id: "saves", label: "Saves" },
-  { id: "cleanSheets", label: "Clean sheets" },
-  { id: "cards", label: "Cards" },
-  { id: "rating", label: "Rating" },
-  { id: "performance", label: "Performance" },
+const METRICS: { id: Metric; label: string; tone: string }[] = [
+  { id: "goals", label: "Goals", tone: "bg-primary-fixed text-on-primary-fixed" },
+  { id: "assists", label: "Assists", tone: "bg-secondary-fixed text-on-secondary-fixed" },
+  { id: "saves", label: "Saves", tone: "bg-success/15 text-success" },
+  { id: "cleanSheets", label: "Clean sheets", tone: "bg-warning/25 text-navy" },
+  { id: "cards", label: "Cards", tone: "bg-error-container text-on-error-container" },
+  { id: "rating", label: "Rating", tone: "bg-secondary-container/30 text-on-secondary-fixed" },
+  { id: "performance", label: "Performance", tone: "bg-primary-container/15 text-primary" },
 ];
 
 export function StatsScreen({ initialMetric }: { initialMetric?: string }) {
@@ -44,11 +44,12 @@ export function StatsScreen({ initialMetric }: { initialMetric?: string }) {
           ))}
         </div>
       ) : null}
-      <div className="mb-4 grid grid-cols-2 gap-1 sm:grid-cols-4" role="tablist" aria-label="Statistic">
+      <div className="mb-4 grid grid-cols-2 gap-1.5 rounded-xl bg-gradient-to-br from-secondary-fixed via-white to-primary-fixed p-1.5 sm:grid-cols-4" role="tablist" aria-label="Statistic">
         {METRICS.map((item) => (
           <Chip
             key={item.id}
             active={metric === item.id}
+            tone={item.tone}
             className="w-full shrink px-2"
             onClick={() => {
               setMetric(item.id);
