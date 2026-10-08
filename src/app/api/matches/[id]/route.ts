@@ -19,7 +19,7 @@ type Context = { params: Promise<{ id: string }> };
 type Body =
   | { action: "event"; event: MatchEvent }
   | { action: "undo" }
-  | { action: "start" }
+  | { action: "start"; homePlayerIds?: string[]; awayPlayerIds?: string[] }
   | { action: "stop" }
   | { action: "resume" }
   | { action: "end"; penaltyWinnerId?: string }
@@ -37,7 +37,9 @@ export async function POST(request: Request, context: Context) {
       return NextResponse.json(await addMatchEvent({ ...body.event, matchId: id }));
     }
     if (body.action === "undo") return NextResponse.json(await undoMatchEvent(id));
-    if (body.action === "start") return NextResponse.json(await startMatch(id));
+    if (body.action === "start") {
+      return NextResponse.json(await startMatch(id, body.homePlayerIds ?? [], body.awayPlayerIds ?? []));
+    }
     if (body.action === "stop") return NextResponse.json(await pauseMatch(id));
     if (body.action === "resume") return NextResponse.json(await resumeMatch(id));
     if (body.action === "end") return NextResponse.json(await endMatch(id, body.penaltyWinnerId));

@@ -6,6 +6,7 @@ import { publishTournament, teamKey } from "@/lib/publish";
 import { createSeed } from "@/lib/seed";
 import type { AppState, Format, Match, MatchEvent, NewTournamentInput, Player, TournamentDetails } from "@/lib/types";
 import { HALF_LIMIT_SECONDS } from "@/lib/format";
+import { isSentOff, onPitchIds, sideSize } from "@/lib/lineup";
 import { uid } from "@/lib/ids";
 import { getPool } from "./db";
 import { seedOrganizer } from "./users";
@@ -116,7 +117,7 @@ async function mergeTeam(client: PoolClient, keeper: string, duplicate: string) 
 
 async function readState(): Promise<AppState> {
   const db = getPool();
-  const [teams, players, tournaments, tournamentTeams, groups, groupTeams, rounds, matches, events, settings] =
+  const [teams, players, tournaments, tournamentTeams, groups, groupTeams, rounds, matches, starters, events, settings] =
     await Promise.all([
       db.query<{ id: string; name: string; city: string }>("SELECT id, name, city FROM teams ORDER BY name"),
       db.query<{ id: string; team_id: string; name: string; shirt_number: number; position: string | null }>(
@@ -167,6 +168,9 @@ async function readState(): Promise<AppState> {
         on_break: boolean;
         penalty_winner_id: string | null;
       }>("SELECT * FROM matches"),
+      db.query<{ match_id: string; team_id: string; player_id: string }>(
+        "SELECT match_id, team_id, player_id FROM match_starters",
+      ),
       db.query<{
         id: string;
         match_id: string;
@@ -217,6 +221,12 @@ async function readState(): Promise<AppState> {
     })),
     matches: matches.rows.map((match) => {
       const kick = kickoffParts(match.kickoff_at);
+      const homeStarterIds = starters.rows
+        .filter((row) => row.match_id === match.id && row.team_id === match.home_team_id)
+        .map((row) => row.player_id);
+      const awayStarterIds = starters.rows
+        .filter((row) => row.match_id === match.id && row.team_id === match.away_team_id)
+        .map((row) => row.player_id);
       return {
         id: match.id,
         tournamentId: match.tournament_id,
@@ -241,6 +251,8 @@ async function readState(): Promise<AppState> {
         period: match.period === 2 ? 2 : 1,
         onBreak: match.on_break,
         penaltyWinnerId: match.penalty_winner_id,
+        ...(homeStarterIds.length ? { homeStarterIds } : {}),
+        ...(awayStarterIds.length ? { awayStarterIds } : {}),
       };
     }),
     events: events.rows.map((event) => ({
@@ -321,6 +333,7 @@ export async function replaceState(state: AppState) {
     await client.query("BEGIN");
     await client.query(`
       TRUNCATE TABLE
+        match_starters,
         match_events,
         matches,
         group_teams,
@@ -637,8 +650,21 @@ export async function setMyTeam(teamId: string | null) {
 
 export async function addMatchEvent(event: MatchEvent) {
   await ensureReady();
-  const match = await getMatch(event.matchId);
+  const found = await getPool().query<{
+    status: string;
+    home_team_id: string | null;
+    away_team_id: string | null;
+    clock_seconds: number;
+    clock_running: boolean;
+    clock_anchor: Date | null;
+  }>(
+    `SELECT status, home_team_id, away_team_id, clock_seconds, clock_running, clock_anchor
+     FROM matches WHERE id = $1`,
+    [event.matchId],
+  );
+  const match = found.rows[0];
   if (!match || match.status !== "live") throw new Error("Match is not live");
+  await assertLineupEvent(event, match.home_team_id, match.away_team_id);
   const minute = Math.floor(elapsed(match) / 60);
   const client = await getPool().connect();
   try {
@@ -695,20 +721,135 @@ export async function undoMatchEvent(matchId: string) {
   return loadState();
 }
 
-export async function startMatch(matchId: string) {
+export async function startMatch(matchId: string, homePlayerIds: string[], awayPlayerIds: string[]) {
   await ensureReady();
-  await getPool().query(
-    `UPDATE matches
-     SET status = 'live',
-         period = 1,
-         on_break = false,
-         clock_seconds = 0,
-         clock_running = true,
-         clock_anchor = now()
-     WHERE id = $1`,
+  const found = await getPool().query<{
+    status: string;
+    home_team_id: string | null;
+    away_team_id: string | null;
+    format: string;
+  }>(
+    `SELECT m.status, m.home_team_id, m.away_team_id, t.format
+     FROM matches AS m
+     JOIN tournaments AS t ON t.id = m.tournament_id
+     WHERE m.id = $1`,
     [matchId],
   );
+  const match = found.rows[0];
+  if (!match || match.status !== "scheduled") throw new Error("This match cannot be started");
+  if (!match.home_team_id || !match.away_team_id) throw new Error("Both teams are needed before kickoff");
+  const size = sideSize(match.format);
+  assertStarterCount(homePlayerIds, size);
+  assertStarterCount(awayPlayerIds, size);
+  const players = await getPool().query<{ id: string; team_id: string }>(
+    "SELECT id, team_id FROM players WHERE id = ANY($1::text[])",
+    [[...homePlayerIds, ...awayPlayerIds]],
+  );
+  const teamByPlayer = new Map(players.rows.map((player) => [player.id, player.team_id]));
+  if (homePlayerIds.some((id) => teamByPlayer.get(id) !== match.home_team_id)) {
+    throw new Error("Pick starting players from the home squad");
+  }
+  if (awayPlayerIds.some((id) => teamByPlayer.get(id) !== match.away_team_id)) {
+    throw new Error("Pick starting players from the away squad");
+  }
+  const client = await getPool().connect();
+  try {
+    await client.query("BEGIN");
+    await client.query("DELETE FROM match_starters WHERE match_id = $1", [matchId]);
+    for (const playerId of homePlayerIds) {
+      await client.query(
+        "INSERT INTO match_starters (match_id, team_id, player_id) VALUES ($1, $2, $3)",
+        [matchId, match.home_team_id, playerId],
+      );
+    }
+    for (const playerId of awayPlayerIds) {
+      await client.query(
+        "INSERT INTO match_starters (match_id, team_id, player_id) VALUES ($1, $2, $3)",
+        [matchId, match.away_team_id, playerId],
+      );
+    }
+    const updated = await client.query(
+      `UPDATE matches
+       SET status = 'live',
+           period = 1,
+           on_break = false,
+           clock_seconds = 0,
+           clock_running = true,
+           clock_anchor = now()
+       WHERE id = $1 AND status = 'scheduled'`,
+      [matchId],
+    );
+    if (updated.rowCount !== 1) throw new Error("This match cannot be started");
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
   return loadState();
+}
+
+function assertStarterCount(ids: string[], size: number) {
+  if (!Array.isArray(ids) || ids.some((id) => typeof id !== "string" || !id) || new Set(ids).size !== size) {
+    throw new Error(`Pick ${size} starting players for each side`);
+  }
+}
+
+async function assertLineupEvent(event: MatchEvent, homeTeamId: string | null, awayTeamId: string | null) {
+  const starters = await getPool().query<{ team_id: string; player_id: string }>(
+    "SELECT team_id, player_id FROM match_starters WHERE match_id = $1",
+    [event.matchId],
+  );
+  if (starters.rows.length === 0) return;
+  const recorded = await getPool().query<{
+    id: string;
+    kind: MatchEvent["kind"];
+    team_id: string;
+    player_id: string;
+    related_player_id: string | null;
+    card_color: MatchEvent["cardColor"] | null;
+    minute: number;
+  }>(
+    `SELECT id, kind, team_id, player_id, related_player_id, card_color, minute
+     FROM match_events
+     WHERE match_id = $1
+     ORDER BY created_at, id`,
+    [event.matchId],
+  );
+  const events: MatchEvent[] = recorded.rows.map((row) => ({
+    id: row.id,
+    matchId: event.matchId,
+    kind: row.kind,
+    teamId: row.team_id,
+    playerId: row.player_id,
+    relatedPlayerId: row.related_player_id ?? undefined,
+    cardColor: row.card_color ?? undefined,
+    minute: row.minute,
+  }));
+  if (event.teamId !== homeTeamId && event.teamId !== awayTeamId) throw new Error("Pick a team in this match");
+  const ids = starters.rows.filter((row) => row.team_id === event.teamId).map((row) => row.player_id);
+  const on = onPitchIds(ids, events, event.teamId);
+  if (event.kind === "substitution") {
+    if (!event.relatedPlayerId || event.relatedPlayerId === event.playerId) {
+      throw new Error("Pick the player coming on");
+    }
+    if (!on.has(event.playerId)) throw new Error("That player is not on the pitch");
+    if (on.has(event.relatedPlayerId)) throw new Error("That player is already on the pitch");
+    if (isSentOff(events, event.relatedPlayerId)) throw new Error("That player is sent off and cannot return");
+    await assertSquadPlayer(event.playerId, event.teamId);
+    await assertSquadPlayer(event.relatedPlayerId, event.teamId);
+    return;
+  }
+  if (!on.has(event.playerId)) throw new Error("That player is not on the pitch");
+  if (event.relatedPlayerId && !on.has(event.relatedPlayerId)) {
+    throw new Error("Pick a player who is on the pitch");
+  }
+}
+
+async function assertSquadPlayer(playerId: string, teamId: string) {
+  const found = await getPool().query<{ team_id: string }>("SELECT team_id FROM players WHERE id = $1", [playerId]);
+  if (found.rows[0]?.team_id !== teamId) throw new Error("Pick a player from that squad");
 }
 
 export async function pauseMatch(matchId: string) {

@@ -7,8 +7,9 @@ import { useNow } from "@/components/deferred";
 import { Icon, initials } from "@/components/icon";
 import { matchLabel, playerById, playersForTeam, sideTeam, tournamentById } from "@/lib/derive";
 import { elapsedSeconds, formatLabel, HALF_LIMIT_SECONDS, periodClock, REGULATION_SECONDS } from "@/lib/format";
+import { hasLineup, isSentOff, onPitchIds, sideSize, starterIds } from "@/lib/lineup";
 import { useApp } from "@/lib/store";
-import type { CardColor, EventKind } from "@/lib/types";
+import type { CardColor, EventKind, Match, MatchEvent, Player } from "@/lib/types";
 
 type FlowKind = EventKind | "end";
 
@@ -25,6 +26,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
   const running = Boolean(match?.clockRunning);
   const now = useNow(running);
   const [flow, setFlow] = useState<Flow | null>(null);
+  const [lineupOpen, setLineupOpen] = useState(false);
   const [toast, setToast] = useState("");
 
   useEffect(() => {
@@ -128,7 +130,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                   <button
                     type="button"
                     disabled={!home.id || !away.id}
-                    onClick={() => app.startMatch(match.id)}
+                    onClick={() => setLineupOpen(true)}
                     className="col-span-2 flex min-h-11 items-center justify-center gap-1 rounded-lg bg-primary px-3 text-label-md text-on-primary disabled:opacity-50"
                   >
                     <Icon name="play_arrow" className="text-[18px]" />
@@ -226,6 +228,10 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
         </div>
       </section>
 
+      {hasLineup(match) && home.id && away.id ? (
+        <PitchBoard statePlayers={app.state.players} match={match} events={app.state.events} homeName={home.name} awayName={away.name} />
+      ) : null}
+
       {canRecord ? (
         <div className="mb-space-lg">
           <div className="mb-2 flex items-center justify-between">
@@ -239,7 +245,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
             <Pad icon="trending_up" label="+ Assist" className="bg-tertiary-container text-on-primary" onClick={() => setFlow({ kind: "assist", step: 0 })} />
             <Pad icon="shield" label="+ GK Save" className="bg-surface-container-highest text-primary" onClick={() => setFlow({ kind: "save", step: 0 })} />
             <Pad icon="style" label="Foul / Card" className="bg-error-container text-on-error-container" onClick={() => setFlow({ kind: "card", step: 0 })} />
-            <Pad icon="published_with_changes" label="Sub (5v5)" className="bg-surface-container-lowest text-on-surface" onClick={() => setFlow({ kind: "substitution", step: 0 })} />
+            <Pad icon="published_with_changes" label="Rolling sub" className="bg-surface-container-lowest text-on-surface" onClick={() => setFlow({ kind: "substitution", step: 0 })} />
             <Pad
               icon="undo"
               label={last ? `Undo (${last.minute}')` : "Undo"}
@@ -285,9 +291,25 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
         </ul>
       </section>
 
+      {lineupOpen && home.id && away.id ? (
+        <LineupSheet
+          match={match}
+          size={sideSize(tournament?.format ?? "5v5")}
+          homeName={home.name}
+          awayName={away.name}
+          onClose={() => setLineupOpen(false)}
+          onStart={(homePlayerIds, awayPlayerIds) => {
+            setLineupOpen(false);
+            app.startMatch(match.id, homePlayerIds, awayPlayerIds);
+            record("Match started");
+          }}
+        />
+      ) : null}
+
       {flow ? (
         <EventFlow
           flow={flow}
+          match={match}
           homeId={home.id}
           awayId={away.id}
           homeName={home.name}
@@ -307,8 +329,11 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
             record("Save recorded");
           }}
           onCard={(teamId, playerId, color) => {
+            const yellows = app.state.events.filter(
+              (event) => event.matchId === match.id && event.kind === "card" && event.playerId === playerId && event.cardColor === "yellow",
+            ).length;
             app.addCard(match.id, teamId, playerId, color);
-            record("Card recorded");
+            record(color === "red" || yellows >= 1 ? "Sent off for this match" : "Card recorded");
           }}
           onSub={(teamId, offId, onId) => {
             app.addSub(match.id, teamId, offId, onId);
@@ -332,6 +357,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
 
 function EventFlow({
   flow,
+  match,
   homeId,
   awayId,
   homeName,
@@ -349,6 +375,7 @@ function EventFlow({
   finished,
 }: {
   flow: Flow;
+  match: Match;
   homeId: string | null;
   awayId: string | null;
   homeName: string;
@@ -379,7 +406,10 @@ function EventFlow({
               ? "Substitution"
               : "End match";
 
-  const players = flow.teamId
+  const matchEvents = state.events.filter((event) => event.matchId === match.id);
+  const lined = hasLineup(match);
+  const pitch = flow.teamId ? onPitchIds(starterIds(match, flow.teamId), matchEvents, flow.teamId) : new Set<string>();
+  const squad = flow.teamId
     ? [...playersForTeam(state, flow.teamId)].sort((a, b) => {
         if (flow.kind === "save") {
           if (a.position === "Goalkeeper" && b.position !== "Goalkeeper") return -1;
@@ -388,6 +418,14 @@ function EventFlow({
         return a.number - b.number;
       })
     : [];
+  const comingOff = lined ? squad.filter((player) => pitch.has(player.id)) : squad;
+  const comingOn = squad.filter((player) => {
+    if (player.id === flow.playerId) return false;
+    if (!lined) return true;
+    return !pitch.has(player.id) && !isSentOff(matchEvents, player.id);
+  });
+  const onField = lined ? squad.filter((player) => pitch.has(player.id)) : squad;
+  const players = flow.kind === "substitution" && flow.step >= 2 ? comingOn : flow.kind === "substitution" ? comingOff : onField;
 
   return (
     <BottomSheet title={title} onClose={onClose}>
@@ -439,6 +477,14 @@ function EventFlow({
 
       {flow.step === 1 && flow.teamId ? (
         <div className="grid gap-3">
+          {flow.kind === "substitution" ? (
+            <p className="text-on-surface-variant">
+              Player coming off. They can come back on later in this match.
+            </p>
+          ) : null}
+          {players.length === 0 ? (
+            <p className="text-on-surface-variant">No one on the pitch can be selected.</p>
+          ) : null}
           {players.map((player) => (
             <PickButton
               key={player.id}
@@ -486,15 +532,21 @@ function EventFlow({
           >
             Red card
           </button>
+          <p className="text-body-sm text-on-surface-variant">
+            A red card, or a second yellow in this match, sends them off. They cannot come back on.
+          </p>
         </div>
       ) : null}
 
       {flow.step === 2 && flow.kind === "substitution" && flow.teamId && flow.playerId ? (
         <div className="grid gap-3">
-          <p className="text-on-surface-variant">Player coming on</p>
-          {players
-            .filter((player) => player.id !== flow.playerId)
-            .map((player) => (
+          <p className="text-on-surface-variant">
+            Player coming on. They can roll on and off until a red card or a second yellow in this match.
+          </p>
+          {players.length === 0 ? (
+            <p className="text-on-surface-variant">No one on the bench can come on.</p>
+          ) : null}
+          {players.map((player) => (
               <PickButton
                 key={player.id}
                 label={player.name}
@@ -505,6 +557,170 @@ function EventFlow({
         </div>
       ) : null}
     </BottomSheet>
+  );
+}
+
+function LineupSheet({
+  match,
+  size,
+  homeName,
+  awayName,
+  onClose,
+  onStart,
+}: {
+  match: Match;
+  size: number;
+  homeName: string;
+  awayName: string;
+  onClose: () => void;
+  onStart: (homePlayerIds: string[], awayPlayerIds: string[]) => void;
+}) {
+  const { state } = useApp();
+  const [step, setStep] = useState<"home" | "away">("home");
+  const [homeIds, setHomeIds] = useState<string[]>([]);
+  const [awayIds, setAwayIds] = useState<string[]>([]);
+  const teamId = step === "home" ? match.homeTeamId : match.awayTeamId;
+  const teamName = step === "home" ? homeName : awayName;
+  const selected = step === "home" ? homeIds : awayIds;
+  const players = teamId ? playersForTeam(state, teamId) : [];
+  const short = players.length < size;
+
+  function toggle(id: string) {
+    const next = selected.includes(id)
+      ? selected.filter((playerId) => playerId !== id)
+      : selected.length >= size
+        ? selected
+        : [...selected, id];
+    if (step === "home") setHomeIds(next);
+    else setAwayIds(next);
+  }
+
+  return (
+    <BottomSheet title={`${teamName} starters`} onClose={onClose}>
+      <p className="text-on-surface-variant">
+        Pick {size} starting players. Anyone else can roll on and off during the match, until a red card or a second yellow.
+      </p>
+      {short ? (
+        <p className="mt-3 text-on-surface">
+          {teamName} has {players.length} {players.length === 1 ? "player" : "players"}. Add at least {size} on the{" "}
+          <Link href={`/teams/${teamId}`} className="font-semibold text-primary">
+            team page
+          </Link>{" "}
+          before kickoff.
+        </p>
+      ) : (
+        <div className="mt-3 grid gap-2">
+          {players.map((player) => {
+            const pressed = selected.includes(player.id);
+            return (
+              <button
+                key={player.id}
+                type="button"
+                aria-pressed={pressed}
+                onClick={() => toggle(player.id)}
+                className={`flex min-h-12 items-center justify-between gap-3 rounded-xl px-4 text-left ${
+                  pressed ? "bg-primary text-on-primary" : "bg-surface-container-low text-on-surface"
+                }`}
+              >
+                <span className="text-headline-md">{player.name}</span>
+                <span className="shrink-0 text-label-md">#{player.number}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+      <p className="mt-3 text-label-lg">
+        {selected.length} of {size}
+      </p>
+      <div className="mt-3 grid gap-2">
+        {step === "away" ? (
+          <button type="button" onClick={() => setStep("home")} className="min-h-12 text-left text-label-lg text-primary">
+            Back
+          </button>
+        ) : null}
+        {step === "home" ? (
+          <button
+            type="button"
+            disabled={homeIds.length !== size}
+            onClick={() => setStep("away")}
+            className="min-h-14 rounded-xl bg-primary px-4 text-label-lg text-on-primary disabled:opacity-50"
+          >
+            Next: {awayName}
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled={awayIds.length !== size}
+            onClick={() => onStart(homeIds, awayIds)}
+            className="min-h-14 rounded-xl bg-primary px-4 text-label-lg text-on-primary disabled:opacity-50"
+          >
+            Start match
+          </button>
+        )}
+      </div>
+    </BottomSheet>
+  );
+}
+
+function PitchBoard({
+  statePlayers,
+  match,
+  events,
+  homeName,
+  awayName,
+}: {
+  statePlayers: Player[];
+  match: Match;
+  events: MatchEvent[];
+  homeName: string;
+  awayName: string;
+}) {
+  const matchEvents = events.filter((event) => event.matchId === match.id);
+  return (
+    <section className="mb-space-lg rounded-xl bg-surface-container-lowest p-4 shadow-sm">
+      <h2 className="text-headline-md">On the pitch</h2>
+      <p className="mt-1 text-body-sm text-on-surface-variant">
+        Rolling subs. A player can come on and off until a red card or a second yellow in this match.
+      </p>
+      <div className="mt-3 grid gap-4 sm:grid-cols-2">
+        <PitchSide name={homeName} teamId={match.homeTeamId} players={statePlayers} match={match} events={matchEvents} />
+        <PitchSide name={awayName} teamId={match.awayTeamId} players={statePlayers} match={match} events={matchEvents} />
+      </div>
+    </section>
+  );
+}
+
+function PitchSide({
+  name,
+  teamId,
+  players,
+  match,
+  events,
+}: {
+  name: string;
+  teamId: string | null;
+  players: Player[];
+  match: Match;
+  events: MatchEvent[];
+}) {
+  const squad = teamId ? players.filter((player) => player.teamId === teamId).sort((a, b) => a.number - b.number) : [];
+  const on = teamId ? onPitchIds(starterIds(match, teamId), events, teamId) : new Set<string>();
+  const playing = squad.filter((player) => on.has(player.id));
+  const sent = squad.filter((player) => isSentOff(events, player.id));
+  return (
+    <div>
+      <h3 className="text-label-lg">{name}</h3>
+      <ul className="mt-1 space-y-1">
+        {playing.map((player) => (
+          <li key={player.id} className="text-body-sm">
+            {player.name} <span className="text-on-surface-variant">#{player.number}</span>
+          </li>
+        ))}
+      </ul>
+      {sent.length > 0 ? (
+        <p className="mt-2 text-body-sm text-error">Sent off: {sent.map((player) => player.name).join(", ")}</p>
+      ) : null}
+    </div>
   );
 }
 

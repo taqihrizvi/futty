@@ -71,6 +71,8 @@ export interface Match {
   period: 1 | 2;
   onBreak: boolean;
   penaltyWinnerId?: string | null;
+  homeStarterIds?: string[];
+  awayStarterIds?: string[];
 }
 
 export interface MatchEvent {

@@ -81,6 +81,13 @@ ALTER TABLE matches ADD COLUMN IF NOT EXISTS period integer NOT NULL DEFAULT 1;
 ALTER TABLE matches ADD COLUMN IF NOT EXISTS on_break boolean NOT NULL DEFAULT false;
 ALTER TABLE matches ADD COLUMN IF NOT EXISTS penalty_winner_id text REFERENCES teams (id) ON DELETE SET NULL;
 
+CREATE TABLE IF NOT EXISTS match_starters (
+  match_id text NOT NULL REFERENCES matches (id) ON DELETE CASCADE,
+  team_id text NOT NULL REFERENCES teams (id) ON DELETE CASCADE,
+  player_id text NOT NULL REFERENCES players (id) ON DELETE CASCADE,
+  PRIMARY KEY (match_id, player_id)
+);
+
 CREATE TABLE IF NOT EXISTS match_events (
   id text PRIMARY KEY,
   match_id text NOT NULL REFERENCES matches (id) ON DELETE CASCADE,

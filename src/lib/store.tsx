@@ -26,7 +26,7 @@ type StoreApi = {
   addCard: (matchId: string, teamId: string, playerId: string, color: CardColor) => void;
   addSub: (matchId: string, teamId: string, playerOffId: string, playerOnId: string) => void;
   undoLast: (matchId: string) => void;
-  startMatch: (matchId: string) => void;
+  startMatch: (matchId: string, homePlayerIds: string[], awayPlayerIds: string[]) => void;
   pauseMatch: (matchId: string) => void;
   resumeMatch: (matchId: string) => void;
   endHalf: (matchId: string) => void;
@@ -293,7 +293,7 @@ const actions: Omit<StoreApi, "state"> = {
       () => send<AppState>(`/api/matches/${matchId}`, { action: "undo" }),
     );
   },
-  startMatch: (matchId) => {
+  startMatch: (matchId, homePlayerIds, awayPlayerIds) => {
     void save(
       (prev) => ({
         ...prev,
@@ -307,11 +307,18 @@ const actions: Omit<StoreApi, "state"> = {
                 clockSeconds: 0,
                 clockRunning: true,
                 clockAnchor: new Date().toISOString(),
+                homeStarterIds: homePlayerIds,
+                awayStarterIds: awayPlayerIds,
               }
             : match,
         ),
       }),
-      () => send<AppState>(`/api/matches/${matchId}`, { action: "start" }),
+      () =>
+        send<AppState>(`/api/matches/${matchId}`, {
+          action: "start",
+          homePlayerIds,
+          awayPlayerIds,
+        }),
     );
   },
   pauseMatch: (matchId) => {
