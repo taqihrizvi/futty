@@ -2,20 +2,20 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Futty",
-    short_name: "Futty",
+    name: "Contour Arena",
+    short_name: "Contour Arena",
     description:
       "Mobile-first futsal tournaments, live scoring, standings, and player stats.",
     start_url: "/",
     scope: "/",
     display: "standalone",
-    background_color: "#07140f",
-    theme_color: "#07140f",
+    background_color: "#f8f9ff",
+    theme_color: "#113d8d",
     icons: [
       {
-        src: "/icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
+        src: "/logo.png",
+        sizes: "1774x887",
+        type: "image/png",
         purpose: "any",
       },
     ],

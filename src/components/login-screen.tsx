@@ -2,7 +2,6 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Icon } from "@/components/icon";
 import { safeNextPath } from "@/lib/session";
 
 export function LoginScreen() {
@@ -33,7 +32,7 @@ export function LoginScreen() {
       router.replace(safeNextPath(data.next));
       router.refresh();
     } catch {
-      setError("Futty could not reach the sign-in service.");
+      setError("Contour Arena could not reach the sign-in service.");
       setPending(false);
     }
   }
@@ -44,15 +43,8 @@ export function LoginScreen() {
         onSubmit={onSubmit}
         className="w-full max-w-md rounded-xl bg-surface-container-lowest p-8 shadow-sm"
       >
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-container text-on-primary">
-            <Icon name="sports_soccer" className="text-[24px]" />
-          </div>
-          <div>
-            <h1 className="text-headline-lg">Futty</h1>
-            <p className="text-label-sm text-outline uppercase">Tournament OS</p>
-          </div>
-        </div>
+        <h1 className="sr-only">Contour Arena</h1>
+        <img src="/logo.png" alt="" width={1774} height={887} className="mx-auto h-auto w-full max-w-xs" />
         <p className="mt-6 text-on-surface-variant">
           Sign in with your email and password to open the tournament desk.
         </p>

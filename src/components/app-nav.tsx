@@ -83,15 +83,9 @@ export function AppNav() {
   return (
     <>
       <aside className="fixed top-0 left-0 z-50 hidden h-full w-64 flex-col border-r border-line bg-surface-container-lowest lg:flex">
-        <div className="flex h-16 items-center gap-2 px-6">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-container text-on-primary">
-            <Icon name="sports_soccer" className="text-[20px]" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-headline-md tracking-tight">Futty</span>
-            <span className="text-label-sm text-outline uppercase">Tournament OS</span>
-          </div>
-        </div>
+        <Link href="/" className="flex h-24 items-center px-4">
+          <img src="/logo.png" alt="Contour Arena" width={1774} height={887} className="h-16 w-auto" />
+        </Link>
         <div className="px-4 py-2">
           <div className="flex items-center justify-between rounded-lg bg-surface-container-low p-2">
             <div className="flex items-center gap-1">
@@ -138,11 +132,8 @@ export function AppNav() {
       <header className="fixed top-0 right-0 left-0 z-40 border-b border-line bg-surface-container-lowest/95 pt-[env(safe-area-inset-top)] backdrop-blur-xl lg:left-64">
         <div className="flex h-14 items-center justify-between gap-2 px-3 lg:h-16 lg:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <Link href="/" className="flex min-w-0 items-center gap-2 lg:hidden">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-container text-on-primary">
-              <Icon name="sports_soccer" className="text-[20px]" />
-            </span>
-            <span className="truncate text-headline-md tracking-tight">Futty</span>
+          <Link href="/" className="shrink-0 lg:hidden">
+            <img src="/logo.png" alt="Contour Arena" width={1774} height={887} className="h-10 w-auto" />
           </Link>
           <div className="relative min-w-0" onPointerDown={(event) => event.stopPropagation()}>
             <button

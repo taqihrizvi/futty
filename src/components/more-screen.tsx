@@ -48,11 +48,11 @@ export function MoreScreen() {
       </section>
 
       <section className="mt-8 rounded-xl bg-surface-container-lowest p-4 shadow-sm">
-        <h2 className="text-lg font-semibold">How Futty works</h2>
+        <h2 className="text-lg font-semibold">How Contour Arena works</h2>
         <p className="mt-2 text-base leading-6 text-muted">
           Organizers build a tournament, start the match, and record goals from large buttons.
           Spectators open the same tournament link for the score, table, and bracket. Match
-          records are stored in the Futty database.
+          records are stored in the Contour Arena database.
         </p>
       </section>
 

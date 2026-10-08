@@ -16,15 +16,19 @@ const hanken = Hanken_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: "Futty",
-    template: "%s · Futty",
+    default: "Contour Arena",
+    template: "%s · Contour Arena",
   },
   description:
     "Corporate athletic futsal tournament manager for live scoring, standings, and squads.",
-  applicationName: "Futty",
+  applicationName: "Contour Arena",
+  icons: {
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: [{ url: "/logo.png", type: "image/png" }],
+  },
   appleWebApp: {
     capable: true,
-    title: "Futty",
+    title: "Contour Arena",
     statusBarStyle: "default",
   },
   formatDetection: { telephone: false },
@@ -55,7 +59,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-dvh bg-background text-on-surface" suppressHydrationWarning>
-        <Suspense fallback={<p className="px-4 pt-20 text-on-surface">Loading Futty…</p>}>
+        <Suspense fallback={<p className="px-4 pt-20 text-on-surface">Loading Contour Arena…</p>}>
           <Shell>{children}</Shell>
         </Suspense>
       </body>

@@ -591,7 +591,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     fetch("/api/state")
       .then(async (response) => {
         const data = (await response.json()) as AppState & { error?: string };
-        if (!response.ok) throw new Error(data.error ?? "Could not load Futty");
+        if (!response.ok) throw new Error(data.error ?? "Could not load Contour Arena");
         return data;
       })
       .then((state) => {
@@ -602,7 +602,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         current = {
           state: emptyState,
           booted: true,
-          error: error instanceof Error ? error.message : "Could not load Futty",
+          error: error instanceof Error ? error.message : "Could not load Contour Arena",
         };
         emit();
       });
@@ -625,7 +625,7 @@ export function DataGate({ children }: { children: ReactNode }) {
       {!snap.booted ? <Loader /> : null}
       {snap.error && snap.state.tournaments.length === 0 ? (
         <div>
-          <h1 className="text-headline-lg">Futty could not reach the database.</h1>
+          <h1 className="text-headline-lg">Contour Arena could not reach the database.</h1>
           <p className="mt-2 text-on-surface-variant">{snap.error}</p>
         </div>
       ) : null}
