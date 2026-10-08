@@ -165,6 +165,7 @@ async function readState(): Promise<AppState> {
         clock_anchor: Date | null;
         period: number;
         on_break: boolean;
+        penalty_winner_id: string | null;
       }>("SELECT * FROM matches"),
       db.query<{
         id: string;
@@ -239,6 +240,7 @@ async function readState(): Promise<AppState> {
         clockAnchor: match.clock_anchor ? match.clock_anchor.toISOString() : null,
         period: match.period === 2 ? 2 : 1,
         onBreak: match.on_break,
+        penaltyWinnerId: match.penalty_winner_id,
       };
     }),
     events: events.rows.map((event) => ({
@@ -733,20 +735,64 @@ export async function resumeMatch(matchId: string) {
   return loadState();
 }
 
-export async function endMatch(matchId: string) {
+export async function endMatch(matchId: string, penaltyWinnerId?: string) {
   await ensureReady();
-  const match = await getMatch(matchId);
+  const found = await getPool().query<{
+    stage: string;
+    home_team_id: string | null;
+    away_team_id: string | null;
+    home_score: number;
+    away_score: number;
+    clock_seconds: number;
+    clock_running: boolean;
+    clock_anchor: Date | null;
+  }>(
+    `SELECT stage, home_team_id, away_team_id, home_score, away_score,
+            clock_seconds, clock_running, clock_anchor
+     FROM matches WHERE id = $1`,
+    [matchId],
+  );
+  const match = found.rows[0];
   if (!match) throw new Error("Match not found");
+  const winner = penaltyWinner(match, penaltyWinnerId);
   await getPool().query(
     `UPDATE matches
      SET status = 'finished',
          clock_running = false,
          clock_anchor = NULL,
-         clock_seconds = $2
+         clock_seconds = $2,
+         penalty_winner_id = $3
      WHERE id = $1`,
-    [matchId, Math.min(HALF_LIMIT_SECONDS, elapsed(match))],
+    [matchId, Math.min(HALF_LIMIT_SECONDS, elapsed(match)), winner],
   );
   return loadState();
+}
+
+export async function recordPenalties(matchId: string, teamId: string) {
+  await ensureReady();
+  const updated = await getPool().query(
+    `UPDATE matches
+     SET penalty_winner_id = $2
+     WHERE id = $1
+       AND status = 'finished'
+       AND stage = 'knockout'
+       AND home_score = away_score
+       AND (home_team_id = $2 OR away_team_id = $2)`,
+    [matchId, teamId],
+  );
+  if ((updated.rowCount ?? 0) === 0) throw new Error("Penalties can only decide a level knockout");
+  return loadState();
+}
+
+function penaltyWinner(
+  match: { stage: string; home_team_id: string | null; away_team_id: string | null; home_score: number; away_score: number },
+  teamId?: string,
+) {
+  if (match.stage !== "knockout" || match.home_score !== match.away_score) return null;
+  if (teamId !== match.home_team_id && teamId !== match.away_team_id) {
+    throw new Error("Pick the team that won on penalties");
+  }
+  return teamId;
 }
 
 export async function endHalf(matchId: string) {

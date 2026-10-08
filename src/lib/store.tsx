@@ -31,7 +31,8 @@ type StoreApi = {
   resumeMatch: (matchId: string) => void;
   endHalf: (matchId: string) => void;
   startSecondHalf: (matchId: string) => void;
-  endMatch: (matchId: string) => void;
+  endMatch: (matchId: string, penaltyWinnerId?: string) => void;
+  recordPenalties: (matchId: string, teamId: string) => void;
   armClock: (matchId: string) => void;
   setMyTeam: (teamId: string | null) => void;
   addPlayer: (player: Omit<Player, "id">) => void;
@@ -392,22 +393,35 @@ const actions: Omit<StoreApi, "state"> = {
       () => send<AppState>(`/api/matches/${matchId}`, { action: "second-half" }),
     );
   },
-  endMatch: (matchId) => {
+  endMatch: (matchId, penaltyWinnerId) => {
     void save(
       (prev) => ({
         ...prev,
         matches: prev.matches.map((match) => {
           if (match.id !== matchId) return match;
+          const levelKnockout = match.stage === "knockout" && match.homeScore === match.awayScore;
           return {
             ...match,
             status: "finished" as const,
             clockRunning: false,
             clockAnchor: null,
             clockSeconds: elapsedSeconds(match, match.clockAnchor ? Date.now() : null),
+            penaltyWinnerId: levelKnockout ? penaltyWinnerId ?? null : null,
           };
         }),
       }),
-      () => send<AppState>(`/api/matches/${matchId}`, { action: "end" }),
+      () => send<AppState>(`/api/matches/${matchId}`, { action: "end", penaltyWinnerId }),
+    );
+  },
+  recordPenalties: (matchId, teamId) => {
+    void save(
+      (prev) => ({
+        ...prev,
+        matches: prev.matches.map((match) =>
+          match.id === matchId ? { ...match, penaltyWinnerId: teamId } : match,
+        ),
+      }),
+      () => send<AppState>(`/api/matches/${matchId}`, { action: "penalties", teamId }),
     );
   },
   armClock: (matchId) => {

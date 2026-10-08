@@ -7,6 +7,7 @@ import {
   endHalf,
   endMatch,
   pauseMatch,
+  recordPenalties,
   resumeMatch,
   startMatch,
   startSecondHalf,
@@ -21,7 +22,8 @@ type Body =
   | { action: "start" }
   | { action: "stop" }
   | { action: "resume" }
-  | { action: "end" }
+  | { action: "end"; penaltyWinnerId?: string }
+  | { action: "penalties"; teamId: string }
   | { action: "end-half" }
   | { action: "second-half" }
   | { action: "clock" };
@@ -38,7 +40,8 @@ export async function POST(request: Request, context: Context) {
     if (body.action === "start") return NextResponse.json(await startMatch(id));
     if (body.action === "stop") return NextResponse.json(await pauseMatch(id));
     if (body.action === "resume") return NextResponse.json(await resumeMatch(id));
-    if (body.action === "end") return NextResponse.json(await endMatch(id));
+    if (body.action === "end") return NextResponse.json(await endMatch(id, body.penaltyWinnerId));
+    if (body.action === "penalties") return NextResponse.json(await recordPenalties(id, body.teamId));
     if (body.action === "end-half") return NextResponse.json(await endHalf(id));
     if (body.action === "second-half") return NextResponse.json(await startSecondHalf(id));
     if (body.action === "clock") return NextResponse.json(await armClock(id));

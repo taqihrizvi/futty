@@ -31,7 +31,7 @@ export function winnerId(match: Match) {
   if (match.status !== "finished" || !match.homeTeamId || !match.awayTeamId) {
     return null;
   }
-  if (match.homeScore === match.awayScore) return null;
+  if (match.homeScore === match.awayScore) return match.penaltyWinnerId ?? null;
   return match.homeScore > match.awayScore ? match.homeTeamId : match.awayTeamId;
 }
 

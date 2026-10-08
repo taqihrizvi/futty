@@ -81,7 +81,7 @@ export function Bracket({ tournament }: { tournament: Tournament }) {
                 <ScoreLine name={away.name} score={match.status === "scheduled" ? null : match.awayScore} />
                 <p className="mt-3 text-base font-semibold text-accent">
                   {winner
-                    ? `${sideTeam(state, { ...match, homeTeamId: winner, awayTeamId: null }, "home").name} advances`
+                    ? `${state.teams.find((team) => team.id === winner)?.name ?? "Winner"} ${match.homeScore === match.awayScore ? "won on penalties" : "advances"}`
                     : "Winner advances"}
                 </p>
               </Link>

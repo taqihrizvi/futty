@@ -124,7 +124,9 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                 <span className="text-label-md font-bold tracking-widest text-surface-bright uppercase">
                   {match.status === "finished" ||
                   (match.period === 2 && !match.clockRunning && !match.onBreak && played >= HALF_LIMIT_SECONDS)
-                    ? "Full time"
+                    ? match.penaltyWinnerId
+                      ? "Full time · penalties"
+                      : "Full time"
                     : match.onBreak
                       ? "Half time"
                       : match.status === "live" && !match.clockRunning
@@ -186,6 +188,25 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                   >
                     End half
                   </button>
+                ) : null}
+                {match.status === "finished" &&
+                match.stage === "knockout" &&
+                match.homeScore === match.awayScore &&
+                !match.penaltyWinnerId &&
+                home.id &&
+                away.id ? (
+                  <button
+                    type="button"
+                    onClick={() => setFlow({ kind: "end", step: 0 })}
+                    className="rounded-lg bg-primary px-3 py-1.5 text-label-md text-on-primary"
+                  >
+                    Penalties
+                  </button>
+                ) : null}
+                {match.penaltyWinnerId ? (
+                  <p className="w-full text-label-sm text-primary-fixed">
+                    {(match.penaltyWinnerId === home.id ? home.name : away.name)} won on penalties
+                  </p>
                 ) : null}
                 {match.status === "live" && !match.onBreak && match.period === 2 ? (
                   <button
@@ -308,9 +329,15 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
             app.addSub(match.id, teamId, offId, onId);
             record("Substitution recorded");
           }}
-          onEnd={() => {
-            app.endMatch(match.id);
-            record("Match ended");
+          levelKnockout={match.stage === "knockout" && match.homeScore === match.awayScore}
+          finished={match.status === "finished"}
+          onEnd={(teamId) => {
+            app.endMatch(match.id, teamId);
+            record(teamId ? "Penalties recorded" : "Match ended");
+          }}
+          onPenalties={(teamId) => {
+            app.recordPenalties(match.id, teamId);
+            record("Penalties recorded");
           }}
         />
       ) : null}
@@ -332,6 +359,9 @@ function EventFlow({
   onCard,
   onSub,
   onEnd,
+  onPenalties,
+  levelKnockout,
+  finished,
 }: {
   flow: Flow;
   homeId: string | null;
@@ -345,7 +375,10 @@ function EventFlow({
   onSave: (teamId: string, playerId: string) => void;
   onCard: (teamId: string, playerId: string, color: CardColor) => void;
   onSub: (teamId: string, offId: string, onId: string) => void;
-  onEnd: () => void;
+  onEnd: (penaltyWinnerId?: string) => void;
+  onPenalties: (teamId: string) => void;
+  levelKnockout: boolean;
+  finished: boolean;
 }) {
   const { state } = useApp();
   const title =
@@ -383,12 +416,28 @@ function EventFlow({
         </button>
       ) : null}
 
-      {flow.kind === "end" ? (
+      {flow.kind === "end" && levelKnockout && homeId && awayId ? (
+        <div className="grid gap-3">
+          <p className="text-on-surface-variant">
+            The score stays level. Who won on penalties?
+          </p>
+          <PickButton
+            label={homeName}
+            onClick={() => (finished ? onPenalties(homeId) : onEnd(homeId))}
+          />
+          <PickButton
+            label={awayName}
+            onClick={() => (finished ? onPenalties(awayId) : onEnd(awayId))}
+          />
+        </div>
+      ) : null}
+
+      {flow.kind === "end" && !levelKnockout ? (
         <div className="grid gap-3">
           <p className="text-on-surface-variant">The score stays as it is and the clock stops.</p>
           <button
             type="button"
-            onClick={onEnd}
+            onClick={() => onEnd()}
             className="min-h-14 rounded-xl bg-error px-4 text-label-lg text-on-primary"
           >
             End match now

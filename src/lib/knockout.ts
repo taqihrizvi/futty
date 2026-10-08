@@ -204,7 +204,7 @@ function groupRanking(state: AppState, tournament: Tournament, groupId: string) 
 function winnerId(state: AppState, matchId: string) {
   const match = state.matches.find((item) => item.id === matchId);
   if (!match || match.status !== "finished" || !match.homeTeamId || !match.awayTeamId) return null;
-  if (match.homeScore === match.awayScore) return null;
+  if (match.homeScore === match.awayScore) return match.penaltyWinnerId ?? null;
   return match.homeScore > match.awayScore ? match.homeTeamId : match.awayTeamId;
 }
 

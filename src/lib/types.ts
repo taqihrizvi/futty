@@ -70,6 +70,7 @@ export interface Match {
   clockAnchor: string | null;
   period: 1 | 2;
   onBreak: boolean;
+  penaltyWinnerId?: string | null;
 }
 
 export interface MatchEvent {

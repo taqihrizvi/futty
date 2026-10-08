@@ -79,6 +79,7 @@ ALTER TABLE matches ADD COLUMN IF NOT EXISTS home_label text;
 ALTER TABLE matches ADD COLUMN IF NOT EXISTS away_label text;
 ALTER TABLE matches ADD COLUMN IF NOT EXISTS period integer NOT NULL DEFAULT 1;
 ALTER TABLE matches ADD COLUMN IF NOT EXISTS on_break boolean NOT NULL DEFAULT false;
+ALTER TABLE matches ADD COLUMN IF NOT EXISTS penalty_winner_id text REFERENCES teams (id) ON DELETE SET NULL;
 
 CREATE TABLE IF NOT EXISTS match_events (
   id text PRIMARY KEY,
