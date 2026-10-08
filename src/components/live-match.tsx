@@ -75,25 +75,10 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
 
   return (
     <div>
-      <div className="mb-space-md flex flex-wrap items-center justify-between gap-2 rounded-xl bg-surface-container-lowest px-3 py-space-sm shadow-sm sm:px-space-md">
-        <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 rounded-full bg-surface-container px-2.5 py-1 text-label-sm tracking-wider text-primary uppercase">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
-            <span>Match Console</span>
-          </div>
-          <span className="text-outline-variant">|</span>
-          <div className="flex min-w-0 items-center gap-1 text-label-md text-on-surface">
-            <Icon name="stadium" className="shrink-0 text-[18px] text-primary" />
-            <span className="truncate">{match.venue}</span>
-          </div>
-          <span className="hidden text-body-sm text-on-surface-variant sm:inline">
-            {matchLabel(app.state, match)} · {formatLabel(tournament?.format ?? "5v5")}
-          </span>
-        </div>
-        <div className="flex items-center gap-1 rounded-md bg-surface-container-high px-2.5 py-1 text-label-sm text-primary">
-          <Icon name="sync" className="text-[16px]" />
-          <span className="hidden sm:inline">SYNC ACTIVE</span>
-        </div>
+      <div className="mb-3 flex min-w-0 items-center justify-between gap-2 rounded-xl bg-surface-container-lowest px-3 py-2.5 shadow-sm">
+        <p className="min-w-0 truncate text-label-md text-on-surface">
+          {match.venue} · {matchLabel(app.state, match)} · {formatLabel(tournament?.format ?? "5v5")}
+        </p>
       </div>
 
       <section className="relative mb-space-lg overflow-hidden rounded-xl bg-inverse-surface text-inverse-on-surface shadow-md">
@@ -108,7 +93,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
                     <span className="truncate text-headline-md text-inverse-on-surface sm:text-headline-lg">{home.name}</span>
-                    <span className="shrink-0 rounded bg-primary-container px-1.5 py-0.5 text-label-sm text-on-primary uppercase">
+                    <span className="hidden shrink-0 rounded bg-primary-container px-1.5 py-0.5 text-label-sm text-on-primary uppercase sm:inline">
                       Home
                     </span>
                   </div>
@@ -136,15 +121,15 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                           : "Scheduled"}
                 </span>
               </div>
-              <div className={`text-inverse-on-surface ${played > REGULATION_SECONDS ? "text-headline-xl" : "text-display-hero"}`}>{clock}</div>
-              <p className="mt-1 text-label-sm text-surface-bright/80">Each half 15:00, added time max +2:00</p>
-              <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
+              <div className={`text-inverse-on-surface ${played > REGULATION_SECONDS ? "text-headline-lg sm:text-headline-xl" : "text-headline-xl sm:text-display-hero"}`}>{clock}</div>
+              <p className="mt-1 text-label-sm text-surface-bright/80">15:00 per half, plus at most 2:00</p>
+              <div className="mt-3 grid w-full grid-cols-2 gap-2">
                 {match.status === "scheduled" ? (
                   <button
                     type="button"
                     disabled={!home.id || !away.id}
                     onClick={() => app.startMatch(match.id)}
-                    className="flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-label-md text-on-primary disabled:opacity-50"
+                    className="col-span-2 flex min-h-11 items-center justify-center gap-1 rounded-lg bg-primary px-3 text-label-md text-on-primary disabled:opacity-50"
                   >
                     <Icon name="play_arrow" className="text-[18px]" />
                     Start
@@ -154,7 +139,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                   <button
                     type="button"
                     onClick={() => app.pauseMatch(match.id)}
-                    className="flex items-center gap-1 rounded-lg bg-surface-container-highest px-3 py-1.5 text-label-md text-on-surface"
+                    className="flex min-h-11 items-center justify-center gap-1 rounded-lg bg-surface-container-highest px-3 text-label-md text-on-surface"
                   >
                     <Icon name="pause" className="text-[18px]" />
                     Stop
@@ -164,7 +149,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                   <button
                     type="button"
                     onClick={() => app.resumeMatch(match.id)}
-                    className="flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-label-md text-on-primary"
+                    className="flex min-h-11 items-center justify-center gap-1 rounded-lg bg-primary px-3 text-label-md text-on-primary"
                   >
                     <Icon name="play_arrow" className="text-[18px]" />
                     Resume
@@ -174,7 +159,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                   <button
                     type="button"
                     onClick={() => app.startSecondHalf(match.id)}
-                    className="flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-label-md text-on-primary"
+                    className="col-span-2 flex min-h-11 items-center justify-center gap-1 rounded-lg bg-primary px-3 text-label-md text-on-primary"
                   >
                     <Icon name="play_arrow" className="text-[18px]" />
                     Start 2nd half
@@ -184,7 +169,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                   <button
                     type="button"
                     onClick={() => app.endHalf(match.id)}
-                    className="rounded-lg bg-error-container px-2.5 py-1.5 text-label-md text-on-error-container"
+                    className="flex min-h-11 items-center justify-center rounded-lg bg-error-container px-3 text-label-md text-on-error-container"
                   >
                     End half
                   </button>
@@ -198,13 +183,13 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                   <button
                     type="button"
                     onClick={() => setFlow({ kind: "end", step: 0 })}
-                    className="rounded-lg bg-primary px-3 py-1.5 text-label-md text-on-primary"
+                    className="col-span-2 flex min-h-11 items-center justify-center rounded-lg bg-primary px-3 text-label-md text-on-primary"
                   >
                     Penalties
                   </button>
                 ) : null}
                 {match.penaltyWinnerId ? (
-                  <p className="w-full text-label-sm text-primary-fixed">
+                  <p className="col-span-2 w-full text-label-sm text-primary-fixed">
                     {(match.penaltyWinnerId === home.id ? home.name : away.name)} won on penalties
                   </p>
                 ) : null}
@@ -212,7 +197,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                   <button
                     type="button"
                     onClick={() => setFlow({ kind: "end", step: 0 })}
-                    className="rounded-lg bg-error-container px-2.5 py-1.5 text-label-md text-on-error-container"
+                    className="flex min-h-11 items-center justify-center rounded-lg bg-error-container px-3 text-label-md text-on-error-container"
                   >
                     End match
                   </button>
@@ -226,7 +211,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
                 </div>
                 <div className="min-w-0 text-right lg:text-left">
                   <div className="flex items-center justify-end gap-1.5 lg:justify-start">
-                    <span className="shrink-0 rounded bg-surface-container-highest px-1.5 py-0.5 text-label-sm text-on-surface uppercase">
+                    <span className="hidden shrink-0 rounded bg-surface-container-highest px-1.5 py-0.5 text-label-sm text-on-surface uppercase sm:inline">
                       Away
                     </span>
                     <span className="truncate text-headline-md text-inverse-on-surface sm:text-headline-lg">{away.name}</span>
@@ -246,7 +231,7 @@ export function LiveMatchScreen({ matchId }: { matchId: string }) {
           <div className="mb-2 flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-label-md tracking-wide text-on-surface uppercase">
               <Icon name="touch_app" className="text-[20px] text-primary" />
-              <span>Rapid Pitch-Side Incident Trigger</span>
+              <span>Record</span>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-space-sm md:grid-cols-3 lg:grid-cols-6">

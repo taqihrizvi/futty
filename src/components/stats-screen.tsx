@@ -44,11 +44,12 @@ export function StatsScreen({ initialMetric }: { initialMetric?: string }) {
           ))}
         </div>
       ) : null}
-      <div className="mb-4 flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Statistic">
+      <div className="mb-4 grid grid-cols-2 gap-1 sm:grid-cols-4" role="tablist" aria-label="Statistic">
         {METRICS.map((item) => (
           <Chip
             key={item.id}
             active={metric === item.id}
+            className="w-full shrink px-2"
             onClick={() => {
               setMetric(item.id);
               setExpanded(false);

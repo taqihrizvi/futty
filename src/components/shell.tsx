@@ -14,7 +14,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <Suspense fallback={<NavFallback />}>
         <AppNav />
       </Suspense>
-      <main className="min-h-dvh px-4 pt-20 pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:pr-8 lg:pb-10 lg:pl-72">
+      <main className="min-h-dvh overflow-x-clip px-4 pt-[calc(4.25rem+env(safe-area-inset-top))] pb-[calc(4.75rem+env(safe-area-inset-bottom))] lg:pr-8 lg:pb-10 lg:pl-72 lg:pt-20">
         <DataGate>{children}</DataGate>
       </main>
     </AppProvider>

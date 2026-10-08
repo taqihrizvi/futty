@@ -221,7 +221,7 @@ function Kpi({
       <div className="flex min-w-0 flex-col">
         <span className="text-label-sm tracking-wider text-outline uppercase">{label}</span>
         <span className="mt-1 text-headline-xl text-on-surface">{value}</span>
-        <span className={`mt-1 flex items-center gap-1 text-label-sm ${noteClass}`}>{note}</span>
+        <span className={`mt-1 truncate text-label-sm ${noteClass}`}>{note}</span>
       </div>
       <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${iconClass}`}>
         <Icon name={icon} className="text-[24px]" />
@@ -324,18 +324,17 @@ function FixtureRow({ match }: { match: Match }) {
             {finished || !live ? match.time : "Live"}
           </span>
         </div>
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-label-sm text-outline">{match.venue}</span>
-            <span className="h-1 w-1 rounded-full bg-outline-variant" />
-            <span className="text-label-sm text-outline">{matchLabel(state, match)}</span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-label-sm text-outline">
+            {match.venue} · {matchLabel(state, match)}
+          </p>
+          <div className="mt-1 flex items-center justify-between gap-3">
+            <span className="truncate font-semibold text-on-surface">{home.name}</span>
+            <span className="shrink-0 tabular-nums font-bold">{finished || live ? match.homeScore : ""}</span>
           </div>
-          <div className="mt-1 flex items-center gap-3">
-            <span className="truncate text-headline-md text-on-surface">{home.name}</span>
-            <span className="rounded bg-surface-container px-2 py-0.5 text-label-md font-bold text-on-surface">
-              {finished || live ? `${match.homeScore} - ${match.awayScore}` : "VS"}
-            </span>
-            <span className="truncate text-headline-md text-on-surface">{away.name}</span>
+          <div className="mt-0.5 flex items-center justify-between gap-3">
+            <span className="truncate font-semibold text-on-surface">{away.name}</span>
+            <span className="shrink-0 tabular-nums font-bold">{finished || live ? match.awayScore : "vs"}</span>
           </div>
         </div>
       </div>

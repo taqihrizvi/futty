@@ -28,10 +28,12 @@ export function Chip({
   active,
   children,
   onClick,
+  className,
 }: {
   active?: boolean;
   children: React.ReactNode;
   onClick: () => void;
+  className?: string;
 }) {
   return (
     <button
@@ -39,7 +41,8 @@ export function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cx(
-        "min-h-11 shrink-0 rounded-lg px-4 text-label-md",
+        "min-h-11 shrink-0 rounded-lg px-3 text-label-md",
+        className,
         active
           ? "bg-surface-container-lowest text-primary shadow-sm"
           : "text-on-surface-variant hover:bg-surface-container-high",

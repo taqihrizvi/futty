@@ -36,11 +36,12 @@ export function MatchesScreen() {
   return (
     <div>
       <PageHeader title="Matches" detail="Fixtures, live games, and results." />
-      <div className="mb-4 flex gap-1 overflow-x-auto rounded-lg bg-surface-container-low p-1">
+      <div className="mb-4 grid grid-cols-3 gap-1 rounded-xl bg-surface-container-low p-1">
         {FILTERS.map((item) => (
           <Chip
             key={item.id}
             active={filter === item.id}
+            className="w-full shrink px-1"
             onClick={() => {
               setFilter(item.id);
               setVisible(PAGE);

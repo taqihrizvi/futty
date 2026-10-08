@@ -143,9 +143,9 @@ export function WizardScreen() {
         title={STEPS[step]}
         detail="Each step fits on a phone. You can go back without losing what you typed."
       />
-      <ol className="mb-5 flex gap-1 overflow-x-auto pb-1">
+      <ol className="mb-5 flex gap-1">
         {STEPS.map((label, index) => (
-          <li key={label} className="min-w-16 flex-1">
+          <li key={label} className="min-w-0 flex-1">
             <div
               className={
                 index <= step ? "h-2 rounded-full bg-accent" : "h-2 rounded-full bg-pitch-3"
@@ -344,7 +344,7 @@ export function WizardScreen() {
       {error ? <p className="mt-4 text-base font-semibold text-live">{error}</p> : null}
 
       {step < 7 ? (
-        <div className="sticky bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-20 mt-6 flex gap-3 bg-background/95 py-3 lg:bottom-0">
+        <div className="sticky bottom-[calc(4.25rem+env(safe-area-inset-bottom))] z-20 -mx-4 mt-6 flex gap-3 border-t border-line bg-background/95 px-4 py-3 lg:bottom-0 lg:mx-0 lg:border-0 lg:px-0">
           {step > 0 ? (
             <button
               type="button"

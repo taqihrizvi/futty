@@ -23,7 +23,7 @@ const MANAGE = [
 
 const MOBILE = [
   { href: "/", label: "Home", icon: "grid_view" },
-  { href: "/tournaments", label: "Tournaments", icon: "emoji_events" },
+  { href: "/tournaments", label: "Cups", icon: "emoji_events" },
   { href: "/matches", label: "Matches", icon: "sports" },
   { href: "/stats", label: "Stats", icon: "bar_chart" },
   { href: "/more", label: "More", icon: "more_horiz" },
@@ -124,13 +124,14 @@ export function AppNav() {
           </button>
         </div>
       </aside>
-      <header className="fixed top-0 right-0 left-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-line bg-surface-container-lowest/95 px-4 backdrop-blur-xl lg:left-64 lg:px-6">
-        <div className="flex min-w-0 flex-1 items-center gap-3">
-          <Link href="/" className="flex items-center gap-2 lg:hidden">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-container text-on-primary">
+      <header className="fixed top-0 right-0 left-0 z-40 border-b border-line bg-surface-container-lowest/95 pt-[env(safe-area-inset-top)] backdrop-blur-xl lg:left-64">
+        <div className="flex h-14 items-center justify-between gap-2 px-3 lg:h-16 lg:px-6">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <Link href="/" className="flex min-w-0 items-center gap-2 lg:hidden">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-container text-on-primary">
               <Icon name="sports_soccer" className="text-[20px]" />
             </span>
-            <span className="text-headline-md tracking-tight">Futty</span>
+            <span className="truncate text-headline-md tracking-tight">Futty</span>
           </Link>
           <div className="hidden items-center gap-1 rounded-lg bg-surface-container-low px-2 py-1.5 text-label-md text-on-surface sm:flex">
             <Icon name="military_tech" className="text-[18px] text-primary" />
@@ -146,16 +147,10 @@ export function AppNav() {
             />
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2">
           <div className="flex items-center gap-1 rounded-full bg-surface-container px-2 py-1 text-label-sm text-primary">
             <span className="h-2 w-2 animate-ping rounded-full bg-error" />
-            <span className="font-bold tracking-wider uppercase">
-              {liveCount} Live
-              <span className="hidden sm:inline">
-                {" "}
-                {liveCount === 1 ? "Match" : "Matches"}
-              </span>
-            </span>
+            <span className="font-bold uppercase">{liveCount} live</span>
           </div>
           <div className="hidden items-center gap-2 sm:flex">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
@@ -169,6 +164,7 @@ export function AppNav() {
             </div>
           </div>
         </div>
+        </div>
       </header>
       <nav className="fixed right-0 bottom-0 left-0 z-40 border-t border-line bg-surface-container-lowest pb-[env(safe-area-inset-bottom)] lg:hidden">
         <ul className="grid h-16 grid-cols-5">
@@ -179,10 +175,10 @@ export function AppNav() {
                 <Link
                   href={item.href}
                   aria-current={on ? "page" : undefined}
-                  className={`flex h-full min-w-0 flex-col items-center justify-center gap-0.5 px-0.5 ${on ? "text-primary" : "text-on-surface-variant"}`}
+                  className={`flex h-full min-w-0 flex-col items-center justify-center gap-1 px-1 ${on ? "text-primary" : "text-on-surface-variant"}`}
                 >
                   <Icon name={item.icon} className="text-[22px]" />
-                  <span className="w-full truncate text-center text-[10px] leading-3 font-semibold">{item.label}</span>
+                  <span className="text-center text-[11px] leading-none font-semibold">{item.label}</span>
                 </Link>
               </li>
             );
@@ -196,7 +192,7 @@ export function AppNav() {
 export function NavFallback() {
   return (
     <>
-      <div className="fixed top-0 right-0 left-0 z-40 h-16 border-b border-line bg-surface-container-lowest lg:left-64" />
+      <div className="fixed top-0 right-0 left-0 z-40 h-[calc(3.5rem+env(safe-area-inset-top))] border-b border-line bg-surface-container-lowest lg:left-64 lg:h-16" />
       <div className="fixed right-0 bottom-0 left-0 z-40 h-16 border-t border-line bg-surface-container-lowest lg:hidden" />
     </>
   );

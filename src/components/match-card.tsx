@@ -26,20 +26,21 @@ export function MatchCard({ match }: { match: Match }) {
           <span className="text-label-sm font-bold text-on-primary-fixed">{initials(home.name, 2)}</span>
           <span className="text-label-sm text-primary">{initials(away.name, 2)}</span>
         </div>
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-label-sm text-outline">{match.venue}</span>
-            <span className="h-1 w-1 rounded-full bg-outline-variant" />
-            <span className="text-label-sm text-outline">{matchLabel(state, match)}</span>
-          </div>
-          <div className="mt-1 flex items-center gap-3">
-            <span className="truncate text-headline-md text-on-surface">{home.name}</span>
-            <span className="rounded bg-surface-container px-2 py-0.5 font-bold text-on-surface">
-              {finished || live
-                ? `${match.homeScore} - ${match.awayScore}`
-                : "VS"}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-label-sm text-outline">
+            {match.venue} · {matchLabel(state, match)}
+          </p>
+          <div className="mt-1 flex items-center justify-between gap-3">
+            <span className="truncate font-semibold text-on-surface">{home.name}</span>
+            <span className="shrink-0 tabular-nums font-bold text-on-surface">
+              {finished || live ? match.homeScore : ""}
             </span>
-            <span className="truncate text-headline-md text-on-surface">{away.name}</span>
+          </div>
+          <div className="mt-0.5 flex items-center justify-between gap-3">
+            <span className="truncate font-semibold text-on-surface">{away.name}</span>
+            <span className="shrink-0 tabular-nums font-bold text-on-surface">
+              {finished || live ? match.awayScore : match.time}
+            </span>
           </div>
         </div>
       </div>
