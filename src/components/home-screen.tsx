@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Icon, initials } from "@/components/icon";
-import { Chip } from "@/components/ui";
 import {
   groupStandings,
   leaderboard,
@@ -50,15 +49,17 @@ export function HomeScreen() {
         ) : (
           <div className="flex gap-2 overflow-x-auto pb-1">
             {state.tournaments.map((item) => (
-              <Chip
+              <button
                 key={item.id}
-                active={item.id === tournament?.id}
-                tone="bg-white text-primary"
-                className="ring-2 ring-white/70"
+                type="button"
+                aria-pressed={item.id === tournament?.id}
                 onClick={() => setCupId(item.id)}
+                className={`min-h-11 shrink-0 rounded-lg border-0 px-3 text-label-md shadow-none ${
+                  item.id === tournament?.id ? "bg-white text-primary" : "bg-white/15 text-on-primary"
+                }`}
               >
                 {item.name}
-              </Chip>
+              </button>
             ))}
           </div>
         )}
