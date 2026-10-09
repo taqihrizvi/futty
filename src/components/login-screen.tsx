@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { safeNextPath } from "@/lib/session";
@@ -39,9 +40,10 @@ export function LoginScreen() {
 
   return (
     <main className="grid min-h-dvh place-items-center px-4 py-10">
+      <div className="w-full max-w-md">
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-md rounded-xl bg-surface-container-lowest p-8 shadow-sm"
+        className="rounded-xl bg-surface-container-lowest p-8 shadow-sm"
       >
         <h1 className="sr-only">Contour Arena</h1>
         <img src="/logo.png" alt="" width={1774} height={887} className="mx-auto h-auto w-full max-w-xs" />
@@ -83,6 +85,13 @@ export function LoginScreen() {
           {pending ? "Signing in…" : "Sign in"}
         </button>
       </form>
+      <Link
+        href="/"
+        className="mt-4 flex min-h-12 items-center justify-center rounded-xl bg-primary-fixed text-label-lg text-on-primary-fixed"
+      >
+        Watch live board
+      </Link>
+      </div>
     </main>
   );
 }

@@ -1,14 +1,26 @@
 import { Pool } from "pg";
 
-let pool: Pool | null = null;
+const globalForDb = globalThis as typeof globalThis & { contourArenaPool?: Pool };
 
 export function getPool() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error("DATABASE_URL is missing. Add it to .env.");
   }
-  if (!pool) pool = new Pool({ connectionString: withSsl(connectionString) });
-  return pool;
+  if (!globalForDb.contourArenaPool) {
+    const pool = new Pool({
+      connectionString: withSsl(connectionString),
+      max: 2,
+      idleTimeoutMillis: 5_000,
+      connectionTimeoutMillis: 10_000,
+      allowExitOnIdle: true,
+    });
+    pool.on("error", (error) => {
+      console.error(`Database connection error: ${error.message}`);
+    });
+    globalForDb.contourArenaPool = pool;
+  }
+  return globalForDb.contourArenaPool;
 }
 
 function withSsl(connectionString: string) {

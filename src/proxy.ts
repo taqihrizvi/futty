@@ -10,11 +10,14 @@ export async function proxy(request: NextRequest) {
   );
 
   if (pathname === "/login") {
-    if (signedIn) return NextResponse.redirect(new URL("/", request.url));
+    if (signedIn) return NextResponse.redirect(new URL("/dashboard", request.url));
     return NextResponse.next();
   }
 
-  if (pathname === "/api/login" || pathname === "/api/health") return NextResponse.next();
+  if (pathname === "/api/login" || pathname === "/api/health" || pathname === "/api/public") {
+    return NextResponse.next();
+  }
+  if (pathname === "/" || pathname === "/watch" || pathname.startsWith("/watch/")) return NextResponse.next();
 
   if (!signedIn) {
     if (pathname.startsWith("/api/")) {

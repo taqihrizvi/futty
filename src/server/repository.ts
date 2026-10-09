@@ -116,7 +116,8 @@ async function mergeTeam(client: PoolClient, keeper: string, duplicate: string) 
 }
 
 async function readState(): Promise<AppState> {
-  const db = getPool();
+  const db = await getPool().connect();
+  try {
   const [teams, players, tournaments, tournamentTeams, groups, groupTeams, rounds, matches, starters, events, settings] =
     await Promise.all([
       db.query<{ id: string; name: string; city: string }>("SELECT id, name, city FROM teams ORDER BY name"),
@@ -267,6 +268,9 @@ async function readState(): Promise<AppState> {
     })),
     myTeamId: settings.rows[0]?.value ?? null,
   };
+  } finally {
+    db.release();
+  }
 }
 
 export async function loadState(): Promise<AppState> {

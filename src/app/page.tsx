@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { HomeScreen } from "@/components/home-screen";
+import { PublicHome } from "@/components/public-home";
 
 export const metadata: Metadata = { title: { absolute: "Contour Arena" } };
 
 export default function HomePage() {
-  return <HomeScreen />;
+  return <PublicHome />;
 }

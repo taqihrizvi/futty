@@ -7,7 +7,7 @@ import { AppProvider, DataGate } from "@/lib/store";
 
 export function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  if (pathname === "/login") return children;
+  if (pathname === "/" || pathname === "/login" || pathname.startsWith("/watch")) return children;
 
   return (
     <AppProvider>
